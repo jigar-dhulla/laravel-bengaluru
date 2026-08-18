@@ -1,0 +1,1434 @@
+<title>Bots That Do Things</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&family=JetBrains+Mono:wght@400;500;700&family=Public+Sans:wght@400;500;700&display=swap">
+
+<style>
+  :root {
+    --ink:    #0A0F14;
+    --ink-1:  #0F161E;
+    --ink-2:  #16212C;
+    --line:   #22323F;
+    --fog:    #8A9BAA;
+    --paper:  #E6EEF4;
+    --signal: #34B5EE;
+    --ember:  #FF6B4A;
+    --mint:   #59D9A4;
+    --iris:   #A99BFF;
+    --sans: "Public Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    /* show -> and => literally; ligatures read as maths on a projector */
+    --no-liga: none;
+    --fs: clamp(14px, min(2.02vh, 1.16vw), 25px);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: var(--fs);
+    line-height: 1.55;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  :focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+
+  /* ---------- slide shell ---------- */
+
+  .slide {
+    display: none;
+    height: 100dvh;
+    padding: 4.4vh 5.4vw 7.6vh;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 3.4vh;
+    overflow: hidden;
+  }
+  .slide.is-active { display: grid; }
+
+  .rail {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 2em;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1.2vh;
+  }
+  .kicker {
+    font-family: var(--mono);
+    font-size: .74em;
+    text-transform: uppercase;
+    letter-spacing: .2em;
+    color: var(--fog);
+    white-space: nowrap;
+  }
+  .kicker b { color: var(--signal); font-weight: 500; }
+  .timing {
+    font-family: var(--mono);
+    font-size: .7em;
+    letter-spacing: .12em;
+    color: var(--fog);
+    white-space: nowrap;
+  }
+
+  .body { display: grid; min-height: 0; align-content: start; gap: 2.6vh; }
+  .body.split { grid-template-columns: 0.92fr 1.08fr; gap: 4vw; align-items: start; }
+  .body.split.wide-code { grid-template-columns: 0.72fr 1.28fr; }
+  .body.center { align-content: center; }
+
+  .col { display: grid; gap: 1.6vh; min-width: 0; align-content: start; }
+
+  h1, h2, h3 { margin: 0; font-family: var(--display); text-wrap: balance; }
+  h1 {
+    font-weight: 900;
+    font-stretch: 118%;
+    font-size: 4.4em;
+    line-height: .94;
+    letter-spacing: -.025em;
+  }
+  h2 {
+    font-weight: 800;
+    font-stretch: 112%;
+    font-size: 2.3em;
+    line-height: 1.04;
+    letter-spacing: -.018em;
+    max-width: 24ch;
+  }
+  h3 { font-weight: 700; font-stretch: 106%; font-size: 1.1em; line-height: 1.2; }
+
+  p { margin: 0; max-width: 46ch; }
+  .lede { font-size: 1.12em; color: #C4D2DD; max-width: 42ch; }
+  .fine { font-size: .82em; color: var(--fog); max-width: 52ch; }
+  em { color: var(--paper); font-style: normal; box-shadow: inset 0 -.4em 0 rgba(52,181,238,.18); }
+
+  ul.beats { margin: 0; padding: 0; list-style: none; display: grid; gap: 1.15em; max-width: 40ch; }
+  ul.beats li { display: grid; grid-template-columns: 1.6em 1fr; gap: .5em; align-items: baseline; }
+  ul.beats li::before {
+    content: attr(data-n);
+    font-family: var(--mono);
+    font-size: .72em;
+    color: var(--signal);
+    letter-spacing: .04em;
+  }
+  ul.beats strong { font-weight: 600; }
+  ul.beats span { color: var(--fog); }
+
+  /* ---------- chapter slides ---------- */
+
+  .chapter .body { align-content: center; }
+  .chapter .num {
+    font-family: var(--mono);
+    font-size: .8em;
+    letter-spacing: .3em;
+    color: var(--signal);
+  }
+  .chapter h2 { font-size: 4em; max-width: 20ch; }
+  .chapter .clock {
+    font-family: var(--mono);
+    font-size: .8em;
+    max-width: 56ch;
+    color: var(--fog);
+    letter-spacing: .12em;
+    border-top: 1px solid var(--line);
+    padding-top: 1em;
+    margin-top: .6em;
+  }
+
+  /* ---------- code ---------- */
+
+  pre.code, .term, code, .toolcall {
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+  }
+
+  pre.code {
+    font-family: var(--mono);
+    font-size: .78em;
+    line-height: 1.7;
+    white-space: normal;
+    margin: 0;
+    background: var(--ink-1);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.4em 0;
+    overflow: auto;
+    max-height: 100%;
+    min-height: 0;
+    tab-size: 4;
+  }
+  pre.code .ln { display: block; white-space: pre; padding: 0 1.6em; }
+  pre.code .hl { background: rgba(52,181,238,.11); box-shadow: inset 2px 0 0 var(--signal); }
+  pre.code.tall { font-size: .73em; }
+  pre.code .path {
+    display: block;
+    padding: 0 1.6em .9em;
+    color: var(--fog);
+    font-size: .92em;
+  }
+  .c  { color: var(--fog); font-style: italic; }
+  .k  { color: var(--signal); }
+  .t  { color: var(--iris); }
+  .s  { color: var(--mint); }
+  .n  { color: var(--mint); }
+  .a  { color: var(--ember); }
+
+  /* ---------- cards ---------- */
+
+  .cards { display: grid; gap: 1.4vw; align-content: start; }
+  .cards.three { grid-template-columns: repeat(3, 1fr); }
+  .cards.four  { grid-template-columns: repeat(4, 1fr); }
+  .cards.two   { grid-template-columns: repeat(2, 1fr); }
+  .card {
+    background: var(--ink-1);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1.5em 1.4em;
+    display: grid;
+    gap: .6em;
+    align-content: start;
+    min-width: 0;
+  }
+  .card .tag {
+    font-family: var(--mono);
+    font-size: .68em;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    color: var(--signal);
+  }
+  .card p { font-size: .92em; color: #B9C7D3; max-width: none; }
+  .card code { font-family: var(--mono); font-size: .88em; color: var(--paper); }
+  .card.accent { border-color: rgba(255,107,74,.45); }
+  .card.accent .tag { color: var(--ember); }
+
+  /* ---------- chat mock ---------- */
+
+  .chat { display: grid; gap: .8em; align-content: end; min-width: 0; }
+  .chat > * { animation: rise .55s both; animation-delay: calc(var(--i) * .34s + .2s); }
+  .bubble {
+    max-width: 84%;
+    padding: .68em 1em;
+    border-radius: 17px;
+    line-height: 1.42;
+    font-size: .98em;
+  }
+  .bubble.me {
+    justify-self: end;
+    background: var(--signal);
+    color: #04222F;
+    font-weight: 500;
+    border-bottom-right-radius: 5px;
+  }
+  .bubble.bot {
+    justify-self: start;
+    background: var(--ink-2);
+    border: 1px solid var(--line);
+    border-bottom-left-radius: 5px;
+  }
+  .toolcall {
+    justify-self: start;
+    font-family: var(--mono);
+    font-size: .72em;
+    color: var(--mint);
+    border: 1px dashed rgba(89,217,164,.42);
+    border-radius: 8px;
+    padding: .5em .8em;
+    max-width: 92%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .toolcall b { color: var(--paper); font-weight: 500; }
+  .chat .aside {
+    justify-self: center;
+    font-family: var(--mono);
+    font-size: .68em;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--fog);
+    padding: .2em 0;
+  }
+  .dots { display: inline-flex; gap: .28em; vertical-align: middle; }
+  .dots i {
+    width: .34em; height: .34em; border-radius: 50%;
+    background: var(--fog);
+    animation: blink 1.25s infinite;
+  }
+  .dots i:nth-child(2) { animation-delay: .18s; }
+  .dots i:nth-child(3) { animation-delay: .36s; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(.7em); } to { opacity: 1; transform: none; } }
+  @keyframes blink { 0%, 60%, 100% { opacity: .3; } 30% { opacity: 1; } }
+
+  /* ---------- misc blocks ---------- */
+
+  .frame {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--ink-1);
+    padding: 1.6em;
+    display: grid;
+    gap: 1em;
+    align-content: start;
+    min-width: 0;
+  }
+  .frame img { width: 100%; border-radius: 8px; display: block; }
+  .frame .missing { display: none; }
+  .frame.is-missing img { display: none; }
+  .frame.is-missing .missing { display: grid; gap: .8em; }
+
+  .term {
+    font-family: var(--mono);
+    font-size: .75em;
+    line-height: 1.72;
+    max-height: 100%;
+    min-height: 0;
+    background: var(--ink-1);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.3em 1.5em;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 0;
+  }
+  .term .ok { color: var(--mint); }
+  .term .dim { color: var(--fog); }
+  .term .you { color: var(--signal); }
+
+  .stack { display: grid; gap: 1.1em; align-content: start; min-height: 0; }
+  .rows { display: grid; gap: .5em; }
+  .row {
+    display: grid;
+    grid-template-columns: 2.4em 1fr;
+    gap: .8em;
+    align-items: baseline;
+    padding: .55em .9em;
+    background: var(--ink-1);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: .9em;
+  }
+  .row b { font-family: var(--mono); font-size: .82em; color: var(--signal); font-weight: 500; }
+  .row span { color: #B9C7D3; }
+  .row code { font-family: var(--mono); font-size: .9em; color: var(--paper); }
+
+  .versus { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; align-items: start; }
+  .versus .side { display: grid; gap: 1.1em; align-content: start; }
+  .versus .side h3 { font-size: 1.5em; }
+  .versus .side.act h3 { color: var(--signal); }
+
+  figure { margin: 0; display: grid; gap: 1em; justify-items: center; min-height: 0; }
+  figure svg { width: 100%; max-width: 100%; height: auto; max-height: 62vh; }
+  figcaption { font-size: .84em; color: var(--fog); max-width: 70ch; text-align: center; }
+
+  .d-box { fill: var(--ink-1); stroke: var(--line); stroke-width: 1.5; }
+  .d-box-lit { fill: #101E28; stroke: var(--signal); stroke-width: 1.5; }
+  .d-cluster { fill: rgba(169,155,255,.05); stroke: var(--iris); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  .d-title { fill: var(--paper); font-family: var(--display); font-weight: 700; font-size: 17px; }
+  .d-sub { fill: var(--fog); font-family: var(--mono); font-size: 12px; }
+  .d-label { fill: var(--fog); font-family: var(--mono); font-size: 12px; letter-spacing: .04em; }
+  .d-flow { stroke: var(--signal); stroke-width: 2; fill: none; }
+  .d-back { stroke: var(--mint); stroke-width: 2; fill: none; }
+  .d-loop { stroke: var(--iris); stroke-width: 1.8; fill: none; }
+  .d-lit { fill: var(--signal); }
+  .d-mint { fill: var(--mint); }
+  .d-iris { fill: var(--iris); }
+
+  .recap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2vw; align-content: center; }
+  .recap .piece { display: grid; gap: .7em; align-content: start; }
+  .recap .piece .what {
+    font-family: var(--mono);
+    font-size: .72em;
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    color: var(--fog);
+  }
+  .recap .piece h3 { font-size: 2em; }
+  .recap .piece:nth-child(1) h3 { color: var(--signal); }
+  .recap .piece:nth-child(2) h3 { color: var(--paper); }
+  .recap .piece:nth-child(3) h3 { color: var(--mint); }
+  .recap .piece p { font-size: .95em; color: #B9C7D3; max-width: 28ch; }
+
+  .meta { display: grid; gap: .3em; }
+  .who { font-family: var(--display); font-stretch: 108%; font-weight: 700; font-size: 1.3em; }
+  .where { font-family: var(--mono); font-size: .78em; color: var(--fog); letter-spacing: .1em; }
+  .hint { font-family: var(--mono); font-size: .74em; color: var(--fog); letter-spacing: .1em; }
+  .edit { border-bottom: 1px dashed var(--ember); }
+  a { color: var(--signal); text-decoration-thickness: 1px; text-underline-offset: .2em; }
+
+  /* ---------- chrome ---------- */
+
+  .progress {
+    position: fixed; left: 0; bottom: 0; height: 2px;
+    background: var(--signal); width: 0; transition: width .28s ease; z-index: 6;
+  }
+  .hud {
+    position: fixed; right: 2.4vw; bottom: 2.2vh;
+    font-family: var(--mono); font-size: .7em; letter-spacing: .14em;
+    color: var(--fog); z-index: 6;
+    font-variant-numeric: tabular-nums;
+  }
+  .nav { position: fixed; left: 2.4vw; bottom: 1.9vh; display: flex; gap: .4em; z-index: 6; }
+  .nav button, .ov-close {
+    font: inherit; font-family: var(--mono); font-size: .8em;
+    background: transparent; color: var(--fog);
+    border: 1px solid var(--line); border-radius: 6px;
+    width: 2.1em; height: 2.1em; cursor: pointer; line-height: 1;
+  }
+  .nav button:hover, .ov-close:hover { color: var(--signal); border-color: var(--signal); }
+
+  .overview {
+    position: fixed; inset: 0; z-index: 20;
+    background: rgba(10,15,20,.98);
+    padding: 6vh 5vw; overflow: auto;
+    display: none;
+  }
+  .overview.is-open { display: block; }
+  .ov-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--line); padding-bottom: 1em; margin-bottom: 1.6em;
+  }
+  .ov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16em, 1fr)); gap: .55em; }
+  .ov-item {
+    font: inherit; text-align: left; cursor: pointer;
+    background: var(--ink-1); color: var(--paper);
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: .7em .9em; display: grid; gap: .25em;
+  }
+  .ov-item:hover { border-color: var(--signal); }
+  .ov-item .ov-n { font-family: var(--mono); font-size: .68em; color: var(--signal); letter-spacing: .12em; }
+  .ov-item .ov-t { font-size: .88em; line-height: 1.3; }
+  .ov-item[aria-current="true"] { border-color: var(--signal); background: #101E28; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chat > *, .dots i { animation: none; }
+    .progress { transition: none; }
+  }
+
+  @media (max-width: 780px) {
+    .body.split, .body.split.wide-code, .versus { grid-template-columns: 1fr; gap: 2.4vh; }
+    .cards.three, .cards.four, .cards.two, .recap { grid-template-columns: 1fr; }
+    .slide { height: auto; min-height: 100dvh; }
+    body { overflow: auto; }
+  }
+
+  @page { size: landscape; margin: 0; }
+  @media print {
+    body { overflow: visible; }
+    .slide { display: grid !important; height: 100vh; break-after: page; page-break-after: always; }
+    .chat > * { animation: none; opacity: 1; transform: none; }
+    .progress, .hud, .nav, .overview { display: none !important; }
+  }
+</style>
+
+<main class="deck">
+
+<!-- 1 ................................................................ title -->
+<section class="slide" data-title="Bots that do things">
+  <header class="rail">
+    <span class="kicker">Laravel 13 &nbsp;·&nbsp; laravel/ai v0.10 &nbsp;·&nbsp; Telegram Bot API</span>
+  </header>
+  <div class="body split center">
+    <div class="col">
+      <h1>Bots that<br>do things</h1>
+      <p class="lede">An agentic Telegram bot in Laravel. It decides, it calls tools, and it remembers who it is talking to.</p>
+      <div class="meta">
+        <span class="who">Jigar Dhulla</span>
+        <!-- EDIT ME: your repo / slides URL, also on the last slide -->
+        <span class="where"><span class="edit">github.com/…/telegram-ai-bot</span></span>
+      </div>
+    </div>
+    <div class="chat" aria-label="A conversation with the bot: it sets a reminder, then sends it the next morning">
+      <div class="bubble me" style="--i:0">Remind me to call the dentist tomorrow at 9</div>
+      <div class="toolcall" style="--i:1"><b>CreateReminder</b> { "remind_at": "2026-08-31 09:00" }</div>
+      <div class="toolcall" style="--i:2">&rarr; Reminder #1 set for Mon 31 Aug 2026, 09:00.</div>
+      <div class="bubble bot" style="--i:3">Done, I'll nudge you Monday at 09:00.</div>
+      <div class="aside" style="--i:4">the next morning</div>
+      <div class="bubble bot" style="--i:5">⏰ Call the dentist</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 ................................................................ ch 01 -->
+<section class="slide chapter" data-title="Chapter 01 — The hook">
+  <header class="rail">
+    <span class="kicker">01 <b>The hook</b></span>
+    <!-- rehearsal: 2–3 min -->
+  </header>
+  <div class="body">
+    <div class="col">
+      <span class="num">01</span>
+      <h2>Show it first,<br>explain it after.</h2>
+      <p class="clock">Demo · then the one distinction that matters</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 ................................................................. demo -->
+<section class="slide" data-title="Watch it work">
+  <header class="rail">
+    <span class="kicker">01 <b>The hook</b></span>
+    <span class="timing">live demo</span>
+  </header>
+  <div class="body center split">
+    <div class="col">
+      <h2>Watch it work</h2>
+      <p class="lede">Three messages, in a real Telegram chat, against a real model.</p>
+      <ul class="beats">
+        <li data-n="01"><strong>“Remind me to call the dentist tomorrow at 9.”</strong><br><span>The model works out the date, the tool checks it, a row is written.</span></li>
+        <li data-n="02"><strong>“And remind me about the tax thing sometime next week.”</strong><br><span>“Sometime” is not a date. Watch it come back and ask which day.</span></li>
+        <li data-n="03"><strong>Then put the phone down.</strong><br><span>Tomorrow morning it messages first, with nobody in the chat.</span></li>
+      </ul>
+    </div>
+    <div class="frame is-missing">
+      <img src="demo.gif" alt="The bot setting a reminder and delivering it in Telegram">
+      <div class="missing">
+        <span class="kicker">if the wi-fi dies</span>
+        <p class="fine">Drop a <code>demo.gif</code> next to <code>slides.html</code> and it appears here instead of this box.</p>
+        <pre class="term"><span class="you">$</span> php artisan telegram:poll
+
+  <span class="ok">INFO</span>  Listening for messages.
+
+  Jigar <span class="dim">.......</span> Remember I need to buy milk
+  Jigar <span class="dim">.......</span> What am I supposed to remember?</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 ...................................................... chatbot vs agent -->
+<section class="slide" data-title="Reply vs. act">
+  <header class="rail">
+    <span class="kicker">01 <b>The hook</b></span>
+    <span class="timing">the whole talk in one slide</span>
+  </header>
+  <div class="body center">
+    <h2>A chatbot replies. An agent decides.</h2>
+    <div class="versus">
+      <div class="side">
+        <h3>Chatbot</h3>
+        <pre class="term">you   <span class="dim">→</span> remind me to call the dentist
+        <span class="dim">tomorrow at 9</span>
+bot   <span class="dim">→</span> Sure, I'll remind you!</pre>
+        <p class="fine">Tomorrow at nine, nothing happens. It has no clock, no database, and no way to send you a message you did not ask for. It produced text that <em>sounds</em> like an action.</p>
+      </div>
+      <div class="side act">
+        <h3>Agent</h3>
+        <pre class="term">you   <span class="dim">→</span> remind me to call the dentist
+        <span class="dim">tomorrow at 9</span>
+model <span class="dim">→</span> <span class="ok">CreateReminder { remind_at: "2026-08-31 09:00" }</span>
+app   <span class="dim">→</span> validate, then insert into reminders …
+model <span class="dim">→</span> Done, I'll nudge you Monday at 09:00.
+<span class="dim">─── the next morning, 09:00 ───</span>
+bot   <span class="dim">→</span> <span class="ok">⏰ Call the dentist</span></pre>
+        <p class="fine">The model chose the tool and worked out the date. <em>Your</em> code checked it, stored it, and a scheduled command sent the message a day later — with no one in the chat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 ................................................................ ch 02 -->
+<section class="slide chapter" data-title="Chapter 02 — The pieces">
+  <header class="rail">
+    <span class="kicker">02 <b>The pieces</b></span>
+    <!-- rehearsal: 5–6 min -->
+  </header>
+  <div class="body">
+    <div class="col">
+      <span class="num">02</span>
+      <h2>Three parts,<br>none of them magic.</h2>
+      <p class="clock">Laravel · the Bot API · laravel/ai</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 ......................................................... three pieces -->
+<section class="slide" data-title="The three pieces">
+  <header class="rail">
+    <span class="kicker">02 <b>The pieces</b></span>
+    <span class="timing">the three parts</span>
+  </header>
+  <div class="body center">
+    <h2>What you are actually stitching together</h2>
+    <div class="cards three">
+      <div class="card">
+        <span class="tag">the skeleton</span>
+        <h3>Laravel</h3>
+        <p>A route, a controller, a job, an Eloquent model. Nothing here is AI-specific, and that is the point: the interesting part is ordinary web plumbing.</p>
+      </div>
+      <div class="card">
+        <span class="tag">the mouth and ears</span>
+        <h3>Telegram Bot API</h3>
+        <p>A JSON HTTP API. Updates arrive by webhook or long polling; replies go out with <code>sendMessage</code>. Reach for a package like <code>telegram-bot-sdk</code>, or write the five endpoints you need yourself.</p>
+      </div>
+      <div class="card accent">
+        <span class="tag">the brain</span>
+        <h3>laravel/ai</h3>
+        <p>Laravel's first-party AI SDK. Agents, tools, conversation memory, structured output, streaming and provider failover, behind one API across a dozen providers.</p>
+      </div>
+    </div>
+    <p class="fine">This repo takes the hand-rolled option: <code>app/Services/Telegram.php</code> is 126 lines of <code>Http::post()</code> covering <code>sendMessage</code>, <code>sendChatAction</code>, <code>getUpdates</code>, <code>setWebhook</code> and <code>deleteWebhook</code>. That is the entire surface a bot needs.</p>
+  </div>
+</section>
+
+<!-- 7 ......................................................... architecture -->
+<section class="slide" data-title="How a message flows">
+  <header class="rail">
+    <span class="kicker">02 <b>The pieces</b></span>
+    <span class="timing">the map for the rest of the talk</span>
+  </header>
+  <div class="body">
+    <figure>
+      <svg viewBox="0 0 1160 500" role="img" aria-label="An update travels from Telegram to a webhook route, onto a queue, into the TelegramBot service and then into the agent, whose loop trades tool calls with the provider before a reply is sent back to Telegram.">
+        <defs>
+          <marker id="ar-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="d-lit"></path>
+          </marker>
+          <marker id="ar-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="d-mint"></path>
+          </marker>
+          <marker id="ar-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="d-iris"></path>
+          </marker>
+        </defs>
+
+        <!-- spine -->
+        <rect class="d-box" x="24" y="64" width="150" height="80" rx="10"></rect>
+        <text class="d-title" x="99" y="98" text-anchor="middle">Telegram</text>
+        <text class="d-sub" x="99" y="120" text-anchor="middle">the user's chat</text>
+
+        <rect class="d-box" x="258" y="64" width="196" height="80" rx="10"></rect>
+        <text class="d-title" x="356" y="98" text-anchor="middle">Webhook route</text>
+        <text class="d-sub" x="356" y="120" text-anchor="middle">checks the secret</text>
+
+        <rect class="d-box" x="538" y="64" width="176" height="80" rx="10"></rect>
+        <text class="d-title" x="626" y="98" text-anchor="middle">Queued job</text>
+        <text class="d-sub" x="626" y="120" text-anchor="middle">off the request</text>
+
+        <rect class="d-box" x="798" y="64" width="176" height="80" rx="10"></rect>
+        <text class="d-title" x="886" y="98" text-anchor="middle">TelegramBot</text>
+        <text class="d-sub" x="886" y="120" text-anchor="middle">update → reply</text>
+
+        <line class="d-flow" x1="174" y1="104" x2="252" y2="104" marker-end="url(#ar-flow)"></line>
+        <text class="d-label" x="213" y="92" text-anchor="middle">update</text>
+
+        <line class="d-flow" x1="454" y1="104" x2="532" y2="104" marker-end="url(#ar-flow)"></line>
+        <text class="d-label" x="493" y="92" text-anchor="middle">dispatch</text>
+
+        <line class="d-flow" x1="714" y1="104" x2="792" y2="104" marker-end="url(#ar-flow)"></line>
+        <text class="d-label" x="753" y="92" text-anchor="middle">handle</text>
+
+        <!-- into the agent -->
+        <path class="d-flow" d="M886 144 L886 196 L780 196 L780 236" marker-end="url(#ar-flow)"></path>
+        <text class="d-label" x="898" y="176" text-anchor="start">prompt + history</text>
+
+        <!-- agent cluster -->
+        <rect class="d-cluster" x="300" y="240" width="780" height="188" rx="14"></rect>
+        <text class="d-title" x="324" y="272">TelegramAssistant</text>
+        <text class="d-sub" x="324" y="292">instructions · tools · memory</text>
+
+        <rect class="d-box" x="340" y="316" width="292" height="76" rx="10"></rect>
+        <text class="d-title" x="486" y="348" text-anchor="middle">Your tools</text>
+        <text class="d-sub" x="486" y="370" text-anchor="middle">create · list · cancel</text>
+
+
+        <rect class="d-box-lit" x="748" y="316" width="292" height="76" rx="10"></rect>
+        <text class="d-title" x="894" y="348" text-anchor="middle">The provider</text>
+        <text class="d-sub" x="894" y="370" text-anchor="middle">Gemini, OpenAI, Anthropic, …</text>
+
+        <path class="d-loop" d="M748 338 L632 338" marker-end="url(#ar-loop)"></path>
+        <text class="d-label" x="690" y="328" text-anchor="middle">tool call</text>
+
+        <path class="d-loop" d="M632 370 L748 370" marker-end="url(#ar-loop)"></path>
+        <text class="d-label" x="690" y="390" text-anchor="middle">result</text>
+
+        <!-- reply home -->
+        <path class="d-back" d="M300 356 L120 356 L120 150" marker-end="url(#ar-back)"></path>
+        <text class="d-label" x="132" y="266" text-anchor="start">reply · sendMessage</text>
+      </svg>
+      <figcaption>Everything after the route runs outside the HTTP request. Reminders take a second way out that is not drawn here: a scheduled command, sending to Telegram with no update to answer.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 8 ................................................................ ch 03 -->
+<section class="slide chapter" data-title="Chapter 03 — What “agentic” means">
+  <header class="rail">
+    <span class="kicker">03 <b>What “agentic” means</b></span>
+    <!-- rehearsal: 4–5 min -->
+  </header>
+  <div class="body">
+    <div class="col">
+      <span class="num">03</span>
+      <h2>An agent is four<br>things in a class.</h2>
+      <p class="clock">Instructions · tools · memory · (optionally) a schema</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9 ....................................................... agent anatomy -->
+<section class="slide" data-title="Anatomy of an agent">
+  <header class="rail">
+    <span class="kicker">03 <b>What “agentic” means</b></span>
+    <span class="timing">the whole contract</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Anatomy of an agent</h2>
+      <div class="rows">
+        <div class="row"><b>01</b><span><code>instructions()</code> — who it is and how to behave</span></div>
+        <div class="row"><b>02</b><span><code>tools()</code> — what it is allowed to do</span></div>
+        <div class="row"><b>03</b><span><code>RemembersConversations</code> — what it recalls</span></div>
+        <div class="row"><b>04</b><span><code>schema()</code> — optional: answer as typed JSON, not prose. This bot doesn't need it; its tools carry the schemas</span></div>
+      </div>
+      <p class="fine">Everything else is a trait. <code>Promptable</code> gives you <code>prompt()</code>, <code>stream()</code> and <code>queue()</code>; the interfaces are how the SDK knows which of them apply.</p>
+      <p class="fine">Instructions are built per call, so anything the model cannot know — the clock, most of all — goes in here rather than in the prompt.</p>
+    </div>
+    <pre class="code tall"><span class="path">app/Ai/Agents/TelegramAssistant.php</span><span class="ln"><span class="k">class</span> <span class="t">TelegramAssistant</span> <span class="k">implements</span> <span class="t">Agent</span>, <span class="t">Conversational</span>, <span class="t">HasTools</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">use</span> <span class="t">Promptable</span>, <span class="t">RemembersConversations</span>;</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> instructions(): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln hl">        $now = now();</span>
+<span class="ln"> </span>
+<span class="ln">        <span class="k">return</span> <span class="s">&lt;&lt;&lt;INSTRUCTIONS</span></span>
+<span class="ln">        <span class="s">You are a helpful assistant living inside a Telegram chat.</span></span>
+<span class="ln">        <span class="s">Keep replies short, the way a person texts.</span></span>
+<span class="ln"> </span>
+<span class="ln">        <span class="s">You set reminders, list what is coming up, and cancel the</span></span>
+<span class="ln">        <span class="s">ones they change their mind about.</span></span>
+<span class="ln"> </span>
+<span class="ln hl">        <span class="s">It is {$now-&gt;format('l j F Y, H:i')}. Work reminder times out</span></span>
+<span class="ln hl">        <span class="s">against that clock and pass them to CreateReminder as</span></span>
+<span class="ln hl">        <span class="s">YYYY-MM-DD HH:MM.</span></span>
+<span class="ln">        <span class="s">INSTRUCTIONS</span>;</span>
+<span class="ln">    }</span>
+<span class="ln">    <span class="k">public function</span> tools(): <span class="k">iterable</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [<span class="k">new</span> <span class="t">CreateReminder</span>($this-&gt;chat), <span class="k">new</span> <span class="t">ListReminders</span>($this-&gt;chat), …];</span>
+<span class="ln">    }</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 10 ................................................................ tools -->
+<section class="slide" data-title="A tool is a PHP class">
+  <header class="rail">
+    <span class="kicker">03 <b>What “agentic” means</b></span>
+    <span class="timing">the interesting part</span>
+  </header>
+  <div class="body split">
+    <div class="col">
+      <h2>A tool is a PHP class the model is allowed to call</h2>
+      <p class="lede">Three methods. The SDK turns them into a function definition the provider understands.</p>
+      <div class="rows">
+        <div class="row"><b>name</b><span>the class basename, verbatim: <code>CreateReminder</code></span></div>
+        <div class="row"><b>desc</b><span><code>description()</code> — the only hint the model gets about when to use it</span></div>
+        <div class="row"><b>args</b><span><code>schema()</code> — a typed JSON schema it must fill in</span></div>
+        <div class="row"><b>run</b><span><code>handle()</code> — your code, your database, your rules</span></div>
+      </div>
+      <p class="fine">The model never touches your database. It asks for a tool by name with arguments; the SDK validates them, calls <code>handle()</code>, and feeds the returned string back into the conversation.</p>
+    </div>
+    <div class="stack">
+      <pre class="code"><span class="path">what the provider is sent</span><span class="ln">{</span>
+<span class="ln">  <span class="s">"name"</span>: <span class="s">"CreateReminder"</span>,</span>
+<span class="ln">  <span class="s">"description"</span>: <span class="s">"Set a reminder to be delivered to the user</span></span>
+<span class="ln">    <span class="s">later. Work the date out from the current time in your</span></span>
+<span class="ln">    <span class="s">instructions and pass it as YYYY-MM-DD HH:MM."</span>,</span>
+<span class="ln">  <span class="s">"parameters"</span>: {</span>
+<span class="ln">    <span class="s">"type"</span>: <span class="s">"object"</span>,</span>
+<span class="ln">    <span class="s">"properties"</span>: { <span class="s">"body"</span>: { … }, <span class="s">"remind_at"</span>: { … } },</span>
+<span class="ln">    <span class="s">"required"</span>: [<span class="s">"body"</span>, <span class="s">"remind_at"</span>]</span>
+<span class="ln">  }</span>
+<span class="ln">}</span></pre>
+      <pre class="term">turn 1  model  <span class="dim">→</span> <span class="ok">CreateReminder { remind_at: "2026-08-31 09:00" }</span>
+turn 1  app    <span class="dim">→</span> "Reminder #1 set for Mon 31 Aug 2026, 09:00."
+turn 2  model  <span class="dim">→</span> "Done, I'll nudge you Monday at 09:00."</pre>
+      <p class="fine">One user message, two round trips to the provider. <code>MaxSteps</code> caps how many times that loop may run.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 11 ......................................................... no clock -->
+<section class="slide" data-title="Checking the model's date">
+  <header class="rail">
+    <span class="kicker">03 <b>What &ldquo;agentic&rdquo; means</b></span>
+    <span class="timing">trust, then verify</span>
+  </header>
+  <div class="body split">
+    <div class="col">
+      <h2>The model has no clock. Give it one, then check its work.</h2>
+      <p class="lede">“Tomorrow at 9” is arithmetic against a date the model does not have. Hand it the date, name the format you want back, and validate what arrives.</p>
+      <div class="rows">
+        <div class="row"><b>now</b><span>the current moment goes into the instructions on every call</span></div>
+        <div class="row"><b>shape</b><span>the tool's schema names the exact format it wants</span></div>
+        <div class="row"><b>bail</b><span>stop at the first broken rule, before anything is written</span></div>
+        <div class="row"><b>ask</b><span>the failure message is the next thing the model reads</span></div>
+      </div>
+      <p class="fine">This is the whole trick: a validation message is not a log line, it is a prompt. Write it as an instruction to the model and a bad argument turns into a better question for the user.</p>
+    </div>
+    <div class="stack">
+      <pre class="code"><span class="path">app/Ai/Tools/CreateReminder.php</span><span class="ln">$validator = <span class="t">Validator</span>::make($request-&gt;all(), [</span>
+<span class="ln">    <span class="s">'body'</span> =&gt; [<span class="s">'required'</span>, <span class="s">'string'</span>, <span class="s">'max:255'</span>],</span>
+<span class="ln hl">    <span class="s">'remind_at'</span> =&gt; [<span class="s">'bail'</span>, <span class="s">'required'</span>,</span>
+<span class="ln hl">        <span class="s">'date_format:'</span>.self::FORMATS, <span class="s">'after:now'</span>],</span>
+<span class="ln">], [</span>
+<span class="ln hl">    <span class="s">'remind_at.date_format'</span> =&gt; <span class="s">'That is not a date I can read. Ask'</span></span>
+<span class="ln hl">        .<span class="s">' the user for a specific day and time, then pass it as'</span></span>
+<span class="ln hl">        .<span class="s">' YYYY-MM-DD HH:MM.'</span>,</span>
+<span class="ln">]);</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">if</span> ($validator-&gt;fails()) {</span>
+<span class="ln">    <span class="k">return</span> $validator-&gt;errors()-&gt;first();</span>
+<span class="ln">}</span></pre>
+      <pre class="term">model <span class="dim">→</span> CreateReminder { remind_at: <span class="you">"sometime next week"</span> }
+app   <span class="dim">→</span> <span class="ok">That is not a date I can read. Ask the</span>
+        <span class="ok">user for a specific day and time …</span>
+model <span class="dim">→</span> Happy to set that — which day next week,
+        and what time?</pre>
+    </div>
+  </div>
+</section>
+
+<!-- 12 ............................................................... memory -->
+<section class="slide" data-title="Why it remembers you">
+  <header class="rail">
+    <span class="kicker">03 <b>What “agentic” means</b></span>
+    <span class="timing">persistence</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Why it remembers you between messages</h2>
+      <p class="lede">HTTP forgets everything. A conversation cannot.</p>
+      <div class="rows">
+        <div class="row"><b>trait</b><span><code>RemembersConversations</code> persists every message for you</span></div>
+        <div class="row"><b>row</b><span>one <code>conversation_id</code> stored on the chat</span></div>
+        <div class="row"><b>who</b><span><code>as:</code> and <code>forParticipant()</code> scope it to that chat</span></div>
+        <div class="row"><b>wipe</b><span><code>/forget</code> nulls the column — instant fresh start</span></div>
+      </div>
+      <p class="fine">Two migrations from the SDK do the storing: <code>agent_conversations</code> and <code>agent_conversation_messages</code>. Reminders live in your own table instead, because a reminder has to outlive the conversation that set it.</p>
+    </div>
+    <pre class="code"><span class="path">app/Services/TelegramBot.php</span><span class="ln"><span class="k">if</span> ($text === <span class="s">'/forget'</span>) {</span>
+<span class="ln">    $chat-&gt;update([<span class="s">'conversation_id'</span> =&gt; <span class="k">null</span>]);</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">return</span> <span class="s">'Done, I have forgotten our conversation.'</span>;</span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln">$agent = <span class="k">new</span> <span class="t">TelegramAssistant</span>($chat);</span>
+<span class="ln"> </span>
+<span class="ln hl">$response = ($chat-&gt;conversation_id</span>
+<span class="ln hl">    ? $agent-&gt;continue($chat-&gt;conversation_id, as: $chat)</span>
+<span class="ln hl">    : $agent-&gt;forParticipant($chat))-&gt;prompt($text);</span>
+<span class="ln"> </span>
+<span class="ln">$chat-&gt;update([<span class="s">'conversation_id'</span> =&gt; $response-&gt;conversationId]);</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">return</span> $response-&gt;text;</span></pre>
+  </div>
+</section>
+
+<!-- 12 ............................................................... ch 04 -->
+<section class="slide chapter" data-title="Chapter 04 — The code">
+  <header class="rail">
+    <span class="kicker">04 <b>The code</b></span>
+    <!-- rehearsal: 10–12 min -->
+  </header>
+  <div class="body">
+    <div class="col">
+      <span class="num">04</span>
+      <h2>One message,<br>four steps.</h2>
+      <p class="clock">In · hand off · act · out &nbsp;·&nbsp; ~800 lines</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13 ....................................................... step 1: in -->
+<section class="slide" data-title="Step 1 — the update arrives">
+  <header class="rail">
+    <span class="kicker">04 <b>The code</b></span>
+    <span class="timing">step 1 of 4 &nbsp;·&nbsp; in</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Step 1 — Telegram posts to a route</h2>
+      <p class="lede">One public POST route. Verify, hand off, answer with nothing.</p>
+      <div class="rows">
+        <div class="row"><b>auth</b><span>Telegram signs every request with a header you chose</span></div>
+        <div class="row"><b>fast</b><span>the job means the model call is not in this request</span></div>
+        <div class="row"><b>204</b><span>an empty body is a complete, correct reply here</span></div>
+      </div>
+      <p class="fine">This route is on the public internet with no session and no CSRF token. The secret header is the whole door.</p>
+    </div>
+    <pre class="code"><span class="path">routes/web.php</span><span class="ln"><span class="t">Route</span>::post(<span class="s">'/telegram/webhook'</span>, <span class="t">TelegramWebhookController</span>::<span class="k">class</span>)</span>
+<span class="ln">    -&gt;name(<span class="s">'telegram.webhook'</span>);</span>
+<span class="ln"> </span>
+<span class="ln"><span class="c">// app/Http/Controllers/TelegramWebhookController.php</span></span>
+<span class="ln"><span class="k">public function</span> __invoke(<span class="t">Request</span> $request): <span class="t">Response</span></span>
+<span class="ln">{</span>
+<span class="ln">    $secret = (<span class="k">string</span>) config(<span class="s">'services.telegram.webhook_secret'</span>);</span>
+<span class="ln"> </span>
+<span class="ln">    abort_if(</span>
+<span class="ln">        $secret !== <span class="s">''</span> &amp;&amp; ! hash_equals($secret, (<span class="k">string</span>) $request-&gt;header(</span>
+<span class="ln">            <span class="s">'X-Telegram-Bot-Api-Secret-Token'</span></span>
+<span class="ln">        )),</span>
+<span class="ln">        <span class="n">403</span>,</span>
+<span class="ln">    );</span>
+<span class="ln"> </span>
+<span class="ln hl">    <span class="t">HandleTelegramUpdate</span>::dispatch($request-&gt;all());</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">return</span> response()-&gt;noContent();</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 14 ................................................ step 2: hand it over -->
+<section class="slide" data-title="Step 2 — hand it to the agent">
+  <header class="rail">
+    <span class="kicker">04 <b>The code</b></span>
+    <span class="timing">step 2 of 4 &nbsp;·&nbsp; hand off</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Step 2 — the update becomes a prompt</h2>
+      <p class="lede">The only class that knows about both Telegram and the agent. Everything else stays ignorant of the other side.</p>
+      <div class="rows">
+        <div class="row"><b>skip</b><span>no text, no work — stickers and joins arrive here too</span></div>
+        <div class="row"><b>who</b><span><code>firstOrCreate</code> on the Telegram chat id</span></div>
+        <div class="row"><b>feel</b><span>fire the typing indicator before the slow part</span></div>
+      </div>
+      <p class="fine">Commands like <code>/start</code> and <code>/forget</code> are answered from PHP, with no model call at all. Not every message deserves a token bill.</p>
+    </div>
+    <pre class="code"><span class="path">app/Services/TelegramBot.php</span><span class="ln"><span class="k">public function</span> handle(<span class="k">array</span> $update): <span class="k">void</span></span>
+<span class="ln">{</span>
+<span class="ln">    $message = $update[<span class="s">'message'</span>] ?? <span class="k">null</span>;</span>
+<span class="ln">    $text = trim((<span class="k">string</span>) ($message[<span class="s">'text'</span>] ?? <span class="s">''</span>));</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">if</span> ($text === <span class="s">''</span>) {</span>
+<span class="ln">        <span class="k">return</span>;</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    $chat = $this-&gt;chatFor($message);</span>
+<span class="ln"> </span>
+<span class="ln hl">    $this-&gt;telegram-&gt;sendTyping($chat-&gt;telegram_id);</span>
+<span class="ln hl">    $this-&gt;telegram-&gt;sendMessage($chat-&gt;telegram_id, $this-&gt;reply($chat, $text));</span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">private function</span> chatFor(<span class="k">array</span> $message): <span class="t">TelegramChat</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">return</span> <span class="t">TelegramChat</span>::firstOrCreate(</span>
+<span class="ln">        [<span class="s">'telegram_id'</span> =&gt; $message[<span class="s">'chat'</span>][<span class="s">'id'</span>]],</span>
+<span class="ln">        [<span class="s">'name'</span> =&gt; $message[<span class="s">'chat'</span>][<span class="s">'first_name'</span>] ?? <span class="k">null</span>],</span>
+<span class="ln">    );</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 15 ......................................................... step 3: tool -->
+<section class="slide" data-title="Step 3 — the tool it calls">
+  <header class="rail">
+    <span class="kicker">04 <b>The code</b></span>
+    <span class="timing">step 3 of 4 &nbsp;·&nbsp; act</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Step 3 — the tool, in full</h2>
+      <p class="lede">48 lines. Three methods, and one of them is a sentence.</p>
+      <div class="rows">
+        <div class="row"><b>scope</b><span>the chat is injected, so a tool can only touch that chat's rows</span></div>
+        <div class="row"><b>args</b><span><code>$request-&gt;integer('id')</code> — shaped by the schema you declared</span></div>
+        <div class="row"><b>back</b><span>return a string; the model reads it and writes the reply</span></div>
+      </div>
+      <p class="fine">Scoping in the constructor rather than in a tool argument matters. <code>whereKey($id)</code> runs inside <code>$this-&gt;chat-&gt;reminders()</code>, so the model cannot reach another chat's rows — it was never given a way to name one.</p>
+    </div>
+    <pre class="code tall"><span class="path">app/Ai/Tools/CancelReminder.php</span><span class="ln"><span class="k">class</span> <span class="t">CancelReminder</span> <span class="k">implements</span> <span class="t">Tool</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly</span> <span class="t">TelegramChat</span> $chat) {}</span>
+
+<span class="ln">    <span class="k">public function</span> description(): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln hl">        <span class="k">return</span> <span class="s">'Cancel one of the user\'s reminders by its id. Use'</span></span>
+<span class="ln hl">            .<span class="s">' ListReminders first if you do not know the id.'</span>;</span>
+<span class="ln">    }</span>
+<span class="ln">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        $id = $request-&gt;integer(<span class="s">'id'</span>);</span>
+<span class="ln hl">        $cancelled = $this-&gt;chat-&gt;reminders()-&gt;pending()-&gt;whereKey($id)-&gt;delete();</span>
+<span class="ln"> </span>
+<span class="ln">        <span class="k">return</span> $cancelled &gt; <span class="n">0</span></span>
+<span class="ln">            ? <span class="s">"Cancelled reminder #{$id}."</span></span>
+<span class="ln">            : <span class="s">"No reminder #{$id} is waiting to be sent."</span>;</span>
+<span class="ln">    }</span>
+<span class="ln">    <span class="k">public function</span> schema(<span class="t">JsonSchema</span> $schema): <span class="k">array</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [</span>
+<span class="ln">            <span class="s">'id'</span> =&gt; $schema-&gt;integer()</span>
+<span class="ln">                -&gt;description(<span class="s">'The id of the reminder to cancel.'</span>)</span>
+<span class="ln">                -&gt;required(),</span>
+<span class="ln">        ];</span>
+<span class="ln">    }</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 16 ......................................................... step 4: out -->
+<section class="slide" data-title="Step 4 — the reply goes out">
+  <header class="rail">
+    <span class="kicker">04 <b>The code</b></span>
+    <span class="timing">step 4 of 4 &nbsp;·&nbsp; out</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Step 4 — send it back</h2>
+      <p class="lede">The Bot API is a POST with a JSON body. That is the whole client.</p>
+      <div class="rows">
+        <div class="row"><b>ok</b><span>Telegram answers <code>200</code> with <code>{"ok": false}</code> — check the body, not the status</span></div>
+        <div class="row"><b>time</b><span>a long poll holds the connection open, so timeouts must be generous</span></div>
+        <div class="row"><b>hide</b><span>the token is in the URL, so scrub it before anything is logged</span></div>
+      </div>
+    </div>
+    <pre class="code"><span class="path">app/Services/Telegram.php</span><span class="ln"><span class="k">private function</span> call(<span class="k">string</span> $method, <span class="k">array</span> $payload = []): <span class="k">mixed</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">try</span> {</span>
+<span class="ln hl">        $response = <span class="t">Http</span>::asJson()</span>
+<span class="ln hl">            -&gt;connectTimeout(<span class="n">10</span>)</span>
+<span class="ln hl">            -&gt;timeout(<span class="n">60</span>)</span>
+<span class="ln hl">            -&gt;post(<span class="s">"https://api.telegram.org/bot{$this-&gt;token}/{$method}"</span>, $payload);</span>
+<span class="ln">    } <span class="k">catch</span> (<span class="t">ConnectionException</span> $e) {</span>
+<span class="ln">        <span class="k">throw new</span> <span class="t">RuntimeException</span>(<span class="s">"Telegram [{$method}] unreachable: "</span></span>
+<span class="ln">            .$this-&gt;scrub($e-&gt;getMessage()), previous: $e);</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">if</span> (! $response-&gt;successful() || $response-&gt;json(<span class="s">'ok'</span>) !== <span class="k">true</span>) {</span>
+<span class="ln">        <span class="k">throw new</span> <span class="t">RuntimeException</span>(<span class="s">"Telegram [{$method}] failed: "</span></span>
+<span class="ln">            .$this-&gt;scrub($response-&gt;body()));</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">return</span> $response-&gt;json(<span class="s">'result'</span>);</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 17 ........................................................... end to end -->
+<section class="slide" data-title="One message, end to end">
+  <header class="rail">
+    <span class="kicker">04 <b>The code</b></span>
+    <span class="timing">the whole path</span>
+  </header>
+  <div class="body center split">
+    <div class="col">
+      <h2>“Remind me to call the dentist tomorrow at 9”</h2>
+      <p class="lede">Nine hops, two of them slow, none of them inside the HTTP request Telegram is waiting on.</p>
+      <p class="fine">Steps 5 and 7 are the only ones that cost money or wall-clock time. They run in a worker, where waiting is free — and where a crash is a failed job you can see and replay, not a dropped webhook.</p>
+    </div>
+    <pre class="term"><span class="you">1</span>  POST /telegram/webhook       <span class="dim">secret header checked</span>
+<span class="you">2</span>  HandleTelegramUpdate         <span class="dim">queued</span>
+<span class="you">3</span>  <span class="ok">204 No Content</span>              <span class="dim">Telegram is done waiting</span>
+   <span class="dim">─── worker picks up the job ───</span>
+<span class="you">4</span>  sendChatAction               <span class="dim">typing…</span>
+<span class="you">5</span>  prompt → provider            <span class="dim">instructions + history + 3 tools</span>
+<span class="you">6</span>  ← tool call                  <span class="ok">CreateReminder { remind_at: "2026-08-31 09:00" }</span>
+<span class="you">7</span>  CreateReminder::handle       <span class="dim">validate, insert → "Reminder #1 set for …"</span>
+<span class="you">8</span>  ← text                       <span class="dim">"Done, I'll nudge you Monday at 09:00."</span>
+<span class="you">9</span>  sendMessage                  <span class="dim">chat 42</span></pre>
+  </div>
+</section>
+
+<!-- 20 ..................................................... the bot speaks -->
+<section class="slide" data-title="When the bot speaks first">
+  <header class="rail">
+    <span class="kicker">04 <b>The code</b></span>
+    <span class="timing">the other direction</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Nobody is in the chat when a reminder goes out</h2>
+      <p class="lede">Every other message in this app answers an update. This one answers a clock.</p>
+      <div class="rows">
+        <div class="row"><b>cron</b><span>one scheduled command, every minute</span></div>
+        <div class="row"><b>due</b><span>one indexed query: not delivered, and the time has come</span></div>
+        <div class="row"><b>retry</b><span>a refused send stays undelivered, so the next minute tries again</span></div>
+        <div class="row"><b>free</b><span>no model call at all — the words were written when the reminder was set</span></div>
+      </div>
+      <p class="fine">The moment your bot can message people unprompted it stops being a chat feature and starts being infrastructure: it needs a schedule, a retry story, and somewhere to see what went out.</p>
+    </div>
+    <pre class="code"><span class="path">routes/console.php</span><span class="ln hl"><span class="t">Schedule</span>::command(<span class="t">DeliverReminders</span>::<span class="k">class</span>)-&gt;everyMinute()-&gt;withoutOverlapping();</span>
+<span class="ln"> </span>
+<span class="ln"><span class="c">// app/Console/Commands/DeliverReminders.php</span></span>
+<span class="ln"><span class="k">public function</span> handle(<span class="t">Telegram</span> $telegram): <span class="k">int</span></span>
+<span class="ln">{</span>
+<span class="ln">    $reminders = <span class="t">Reminder</span>::due()-&gt;with(<span class="s">'telegramChat'</span>)-&gt;get();</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">foreach</span> ($reminders <span class="k">as</span> $reminder) {</span>
+<span class="ln">        <span class="k">try</span> {</span>
+<span class="ln">            $telegram-&gt;sendMessage($reminder-&gt;telegramChat-&gt;telegram_id, <span class="s">"⏰ {$reminder-&gt;body}"</span>);</span>
+<span class="ln">        } <span class="k">catch</span> (<span class="t">Throwable</span> $e) {</span>
+<span class="ln">            <span class="c">// Leave it undelivered so the next run tries again, rather</span></span>
+<span class="ln">            <span class="c">// than losing a reminder to one bad minute of network.</span></span>
+<span class="ln">            report($e);</span>
+<span class="ln"> </span>
+<span class="ln">            <span class="k">continue</span>;</span>
+<span class="ln">        }</span>
+<span class="ln"> </span>
+<span class="ln">        $reminder-&gt;update([<span class="s">'delivered_at'</span> =&gt; now()]);</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">return</span> self::SUCCESS;</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 21 ............................................................... ch 05 -->
+<section class="slide chapter" data-title="Chapter 05 — What bit me">
+  <header class="rail">
+    <span class="kicker">05 <b>What bit me</b></span>
+    <!-- rehearsal: 3–4 min -->
+  </header>
+  <div class="body">
+    <div class="col">
+      <span class="num">05</span>
+      <h2>The demo works.<br>Now it has users.</h2>
+      <p class="clock">Timeouts · one provider · a message layer with opinions</p>
+    </div>
+  </div>
+</section>
+
+<!-- 19 ................................................................ queue -->
+<section class="slide" data-title="Never make Telegram wait">
+  <header class="rail">
+    <span class="kicker">05 <b>What bit me</b></span>
+    <span class="timing">gotcha 1 &nbsp;·&nbsp; timeouts</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Never make Telegram wait for a model</h2>
+      <p class="lede">Telegram expects a prompt response to a webhook delivery, and redelivers an update it did not get one for.</p>
+      <div class="rows">
+        <div class="row"><b>bug</b><span>a slow generation reads as a failure, so the update comes back</span></div>
+        <div class="row"><b>worse</b><span>the second delivery answers too — the user gets two replies</span></div>
+        <div class="row"><b>fix</b><span>ack immediately, generate in a worker</span></div>
+      </div>
+      <p class="fine">The SDK's own <code>$agent-&gt;queue($text)-&gt;then(…)</code> backgrounds the model call. I queue the whole handler instead, because the reply still has to be <em>sent</em> — and that is one more network hop that can hang.</p>
+    </div>
+    <pre class="code"><span class="path">app/Jobs/HandleTelegramUpdate.php</span><span class="ln"><span class="k">class</span> <span class="t">HandleTelegramUpdate</span> <span class="k">implements</span> <span class="t">ShouldQueue</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">use</span> <span class="t">Queueable</span>;</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="c">/**</span></span>
+<span class="ln">     <span class="c">* A retry would send the user a second reply, so a failed</span></span>
+<span class="ln">     <span class="c">* update is dropped and reported instead.</span></span>
+<span class="ln">     <span class="c">*/</span></span>
+<span class="ln hl">    <span class="k">public int</span> $tries = <span class="n">1</span>;</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly array</span> $update) {}</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> handle(<span class="t">TelegramBot</span> $bot): <span class="k">void</span></span>
+<span class="ln">    {</span>
+<span class="ln">        $bot-&gt;handle($this-&gt;update);</span>
+<span class="ln">    }</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 20 ............................................................. failover -->
+<section class="slide" data-title="One provider is a single point of failure">
+  <header class="rail">
+    <span class="kicker">05 <b>What bit me</b></span>
+    <span class="timing">gotcha 2 &nbsp;·&nbsp; failover</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>One provider is a single point of failure</h2>
+      <p class="lede">Free tiers get rate limited. Popular models get overloaded. Credit runs out on a Friday.</p>
+      <div class="rows">
+        <div class="row"><b>yes</b><span><code>RateLimitedException</code></span></div>
+        <div class="row"><b>yes</b><span><code>ProviderOverloadedException</code></span></div>
+        <div class="row"><b>yes</b><span><code>InsufficientCreditsException</code></span></div>
+        <div class="row"><b>no</b><span>bad requests and validation errors — those are your bug</span></div>
+      </div>
+      <p class="fine">Only a <code>FailoverableException</code> moves to the next provider, which is what you want: a malformed tool schema should fail loudly on the first try, not four times against four vendors.</p>
+    </div>
+    <div class="stack">
+      <pre class="code"><span class="path">app/Ai/Agents/TelegramAssistant.php</span><span class="ln"><span class="c">/** @return list&lt;string&gt; */</span></span>
+<span class="ln hl"><span class="k">public function</span> provider(): <span class="k">array</span></span>
+<span class="ln hl">{</span>
+<span class="ln hl">    <span class="k">return</span> [config(<span class="s">'ai.default'</span>), ...config(<span class="s">'ai.failover'</span>)];</span>
+<span class="ln hl">}</span></pre>
+      <pre class="code"><span class="path">.env</span><span class="ln">AI_PROVIDER=<span class="s">gemini</span></span>
+<span class="ln">AI_FAILOVER_PROVIDERS=<span class="s">openai,anthropic</span></span></pre>
+      <pre class="code"><span class="path">or per prompt, no config at all</span><span class="ln">$agent-&gt;prompt($text, provider: [<span class="t">Lab</span>::Gemini, <span class="t">Lab</span>::OpenAI]);</span></pre>
+      <p class="fine">Three providers, one deploy, no application code aware of any of them.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 21 ....................................................... message layer -->
+<section class="slide" data-title="Telegram will refuse a good reply">
+  <header class="rail">
+    <span class="kicker">05 <b>What bit me</b></span>
+    <span class="timing">gotcha 3 &nbsp;·&nbsp; the last mile</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Telegram will refuse a perfectly good reply</h2>
+      <p class="lede">The model writes prose. The Bot API has opinions about prose.</p>
+      <div class="rows">
+        <div class="row"><b>4096</b><span>hard cap per message — split before sending, not after failing</span></div>
+        <div class="row"><b>md</b><span>an unbalanced <code>*</code> or a bare <code>_</code> makes the whole call fail</span></div>
+        <div class="row"><b>tell</b><span>say “keep it short” in the instructions and most of this stops</span></div>
+      </div>
+      <p class="fine">Losing the bold is fine. Losing the reply is not. That single <code>catch</code> was the difference between a bot that looks broken and one that looks plain.</p>
+    </div>
+    <pre class="code"><span class="path">app/Services/Telegram.php</span><span class="ln"><span class="k">public function</span> sendMessage(<span class="k">int</span> $chatId, <span class="k">string</span> $text): <span class="k">void</span></span>
+<span class="ln">{</span>
+<span class="ln hl">    <span class="k">foreach</span> (mb_str_split($text, <span class="n">4000</span>) <span class="k">as</span> $chunk) {</span>
+<span class="ln">        $this-&gt;sendChunk($chatId, $chunk);</span>
+<span class="ln">    }</span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">private function</span> sendChunk(<span class="k">int</span> $chatId, <span class="k">string</span> $text): <span class="k">void</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">try</span> {</span>
+<span class="ln">        $this-&gt;call(<span class="s">'sendMessage'</span>, [</span>
+<span class="ln">            <span class="s">'chat_id'</span> =&gt; $chatId,</span>
+<span class="ln">            <span class="s">'text'</span> =&gt; $text,</span>
+<span class="ln">            <span class="s">'parse_mode'</span> =&gt; <span class="s">'Markdown'</span>,</span>
+<span class="ln">        ]);</span>
+<span class="ln">    } <span class="k">catch</span> (<span class="t">RuntimeException</span>) {</span>
+<span class="ln">        <span class="c">// A model can emit Markdown that Telegram refuses to parse,</span></span>
+<span class="ln">        <span class="c">// and dropping the reply is worse than losing the formatting.</span></span>
+<span class="ln hl">        $this-&gt;call(<span class="s">'sendMessage'</span>, [<span class="s">'chat_id'</span> =&gt; $chatId, <span class="s">'text'</span> =&gt; $text]);</span>
+<span class="ln">    }</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 22 ........................................................ four smaller -->
+<section class="slide" data-title="Four smaller ones">
+  <header class="rail">
+    <span class="kicker">05 <b>What bit me</b></span>
+    <span class="timing">gotcha 4 &nbsp;·&nbsp; the rest</span>
+  </header>
+  <div class="body center">
+    <h2>Four smaller ones, quickly</h2>
+    <div class="cards four">
+      <div class="card">
+        <span class="tag">rate limits</span>
+        <h3>Telegram counts too</h3>
+        <p>Telegram's guidance is roughly one message per second per chat and about thirty per second overall. Splitting a long reply into chunks can walk straight into that — throttle the sends, not just the prompts.</p>
+      </div>
+      <div class="card accent">
+        <span class="tag">secrets</span>
+        <h3>The token is in the URL</h3>
+        <p>Every Bot API call puts the token in the path, so any logged error message leaks it. One <code>scrub()</code> before anything reaches a log or a screen, and a bot token stops turning up in stack traces.</p>
+      </div>
+      <div class="card">
+        <span class="tag">networks</span>
+        <h3>Conference wi-fi drops</h3>
+        <p><code>telegram:poll</code> holds a 25-second connection open. Left plain, one dropped packet ends the demo; wrapped in a catch-warn-continue loop, it just reconnects.</p>
+      </div>
+      <div class="card">
+        <span class="tag">tests</span>
+        <h3>Fake the model</h3>
+        <p><code>TelegramAssistant::fake([…])</code> and <code>Http::fake()</code> cover the whole pipeline, tools included. 26 tests, no network, no tokens, 0.4 seconds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 23 ............................................................... ch 06 -->
+<section class="slide chapter" data-title="Chapter 06 — Wrap up">
+  <header class="rail">
+    <span class="kicker">06 <b>Wrap up</b></span>
+    <!-- rehearsal: 2–3 min -->
+  </header>
+  <div class="body">
+    <div class="col">
+      <span class="num">06</span>
+      <h2>Three boxes<br>to take home.</h2>
+      <p class="clock">Then questions</p>
+    </div>
+  </div>
+</section>
+
+<!-- 24 ................................................................ recap -->
+<section class="slide" data-title="The mental model">
+  <header class="rail">
+    <span class="kicker">06 <b>Wrap up</b></span>
+    <span class="timing">the mental model</span>
+  </header>
+  <div class="body center">
+    <h2>Keep these three apart and it stays simple</h2>
+    <div class="recap">
+      <div class="piece">
+        <span class="what">the interface</span>
+        <h3>Telegram</h3>
+        <p>Delivers text, sends text. It knows nothing about models, and should stay that way.</p>
+      </div>
+      <div class="piece">
+        <span class="what">the orchestration</span>
+        <h3>Laravel</h3>
+        <p>Routes, jobs, database, tests. Decides what runs, when, as whom, and what happens when it fails.</p>
+      </div>
+      <div class="piece">
+        <span class="what">the brain</span>
+        <h3>laravel/ai</h3>
+        <p>Picks the words and picks the tools. It only ever gets to <em>ask</em> for an action — your class performs it.</p>
+      </div>
+    </div>
+    <p class="fine">The agent is the only new idea in the whole talk, and it is a class with four methods. Everything that makes it feel alive — memory, tools, failover, the scheduled nudge at nine in the morning — is ordinary Laravel around it.</p>
+  </div>
+</section>
+
+<!-- 25 ................................................................. close -->
+<section class="slide" data-title="Thank you">
+  <header class="rail">
+    <span class="kicker">06 <b>Wrap up</b></span>
+    <span class="timing">questions</span>
+  </header>
+  <div class="body split center">
+    <div class="col">
+      <h1>Go build<br>a bot.</h1>
+      <div class="meta">
+        <span class="who">Jigar Dhulla</span>
+        <!-- EDIT ME: repo and slides URL -->
+        <span class="where"><span class="edit">github.com/…/telegram-ai-bot</span></span>
+      </div>
+      <p class="fine"><code>composer install</code>, a token from @BotFather, a Gemini key, <code>php artisan telegram:poll</code>. You can be talking to your own agent in about ten minutes.</p>
+    </div>
+    <div class="stack">
+      <h3>If you want to go further</h3>
+      <div class="rows">
+        <div class="row"><b>01</b><span>Give it a tool that touches your real system — a ticket, an invoice, a deploy</span></div>
+        <div class="row"><b>02</b><span>Wrap the risky one in <code>Approvable</code> so a human confirms before it runs</span></div>
+        <div class="row"><b>03</b><span>Swap <code>prompt()</code> for <code>stream()</code> and edit the message as it arrives</span></div>
+        <div class="row"><b>04</b><span>Add <code>HasStructuredOutput</code> when you want typed JSON back instead of chat</span></div>
+      </div>
+      <p class="hint">Questions?</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="progress" role="presentation"></div>
+<p class="hud"><span class="hud-n">1</span> / <span class="hud-total">25</span></p>
+<nav class="nav" aria-label="Slides">
+  <button type="button" data-prev title="Previous slide (←)">&#8592;</button>
+  <button type="button" data-next title="Next slide (→)">&#8594;</button>
+</nav>
+
+<div class="overview" id="overview" role="dialog" aria-modal="true" aria-label="Slide map" hidden>
+  <div class="ov-head">
+    <span class="kicker">Slide map &nbsp;·&nbsp; click to jump</span>
+    <button type="button" class="ov-close" title="Close (Esc)">&#215;</button>
+  </div>
+  <div class="ov-grid"></div>
+</div>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var progress = document.querySelector('.progress');
+  var hudN = document.querySelector('.hud-n');
+  var hudTotal = document.querySelector('.hud-total');
+  var overview = document.getElementById('overview');
+  var ovGrid = overview.querySelector('.ov-grid');
+  var current = 0;
+
+  hudTotal.textContent = slides.length;
+
+  slides.forEach(function (slide, i) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'ov-item';
+    button.innerHTML = '<span class="ov-n">' + String(i + 1).padStart(2, '0') + '</span>';
+    var title = document.createElement('span');
+    title.className = 'ov-t';
+    title.textContent = slide.dataset.title || ('Slide ' + (i + 1));
+    button.appendChild(title);
+    button.addEventListener('click', function () {
+      closeOverview();
+      go(i);
+    });
+    ovGrid.appendChild(button);
+  });
+
+  var ovItems = Array.prototype.slice.call(ovGrid.children);
+
+  function go(index) {
+    current = Math.max(0, Math.min(slides.length - 1, index));
+    slides.forEach(function (slide, i) {
+      slide.classList.toggle('is-active', i === current);
+    });
+    ovItems.forEach(function (item, i) {
+      item.setAttribute('aria-current', i === current ? 'true' : 'false');
+    });
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+    hudN.textContent = current + 1;
+    if (history.replaceState) {
+      history.replaceState(null, '', '#' + (current + 1));
+    }
+  }
+
+  function openOverview() {
+    overview.hidden = false;
+    overview.classList.add('is-open');
+    (ovItems[current] || ovItems[0]).focus();
+  }
+
+  function closeOverview() {
+    overview.classList.remove('is-open');
+    overview.hidden = true;
+  }
+
+  document.querySelector('[data-next]').addEventListener('click', function () { go(current + 1); });
+  document.querySelector('[data-prev]').addEventListener('click', function () { go(current - 1); });
+  overview.querySelector('.ov-close').addEventListener('click', closeOverview);
+
+  document.addEventListener('keydown', function (event) {
+    if (event.metaKey || event.ctrlKey || event.altKey) {
+      return;
+    }
+
+    var key = event.key;
+    var open = overview.classList.contains('is-open');
+
+    if (key === 'Escape' && open) { closeOverview(); return; }
+    if (key === 'o' || key === 'O') {
+      open ? closeOverview() : openOverview();
+      event.preventDefault();
+      return;
+    }
+    if (open) { return; }
+
+    if (key === 'ArrowRight' || key === 'PageDown' || key === ' ' || key === 'j') {
+      go(current + 1); event.preventDefault();
+    } else if (key === 'ArrowLeft' || key === 'PageUp' || key === 'k') {
+      go(current - 1); event.preventDefault();
+    } else if (key === 'Home') {
+      go(0); event.preventDefault();
+    } else if (key === 'End') {
+      go(slides.length - 1); event.preventDefault();
+    } else if (key === 'f' || key === 'F') {
+      try {
+        document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+      } catch (e) { /* not permitted here */ }
+      event.preventDefault();
+    }
+  });
+
+  var shot = document.querySelector('.frame img');
+  if (shot) {
+    shot.addEventListener('load', function () {
+      shot.closest('.frame').classList.remove('is-missing');
+    });
+  }
+
+  go(Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1));
+}());
+</script>

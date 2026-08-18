@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "laravel-boost": {
+      "command": "/Users/apple/Library/Application Support/Herd/bin/php85",
+      "args": [
+        "/Users/apple/project/telegram-ai-bot/artisan",
+        "boost:mcp"
+      ]
+    }
+  }
+}

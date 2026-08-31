@@ -33,6 +33,19 @@ it('rejects a request without the secret token', function () {
     TelegramAssistant::assertNeverPrompted();
 });
 
+it('rejects every update while no secret is configured', function () {
+    TelegramAssistant::fake();
+
+    config()->set('services.telegram.webhook_secret', '');
+
+    $this->withHeader('X-Telegram-Bot-Api-Secret-Token', 'shhh')
+        ->postJson(route('telegram.webhook'), [
+            'message' => ['text' => 'Hi', 'chat' => ['id' => 42]],
+        ])->assertForbidden();
+
+    TelegramAssistant::assertNeverPrompted();
+});
+
 it('answers outside the request so Telegram is not kept waiting', function () {
     Queue::fake();
 

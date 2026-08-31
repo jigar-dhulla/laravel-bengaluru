@@ -60,16 +60,20 @@ Locally, use long polling — nothing to expose, no tunnel:
 php artisan telegram:poll
 ```
 
-In production, use the webhook instead. Set `TELEGRAM_WEBHOOK_SECRET` in `.env`,
-then point Telegram at your public URL:
+In production, use the webhook instead. Point Telegram at your public URL and the
+command generates the secret token for you:
 
 ```bash
 php artisan telegram:webhook https://example.com/telegram/webhook
+php artisan telegram:webhook --regenerate   # register a fresh secret
 php artisan telegram:webhook --remove
 ```
 
-The webhook verifies Telegram's `X-Telegram-Bot-Api-Secret-Token` header on
-every request.
+It prints a `TELEGRAM_WEBHOOK_SECRET=` line to copy into `.env`, and reuses the
+secret already there on a later run. The webhook verifies Telegram's
+`X-Telegram-Bot-Api-Secret-Token` header against it on every request and fails
+closed: with no secret in `.env` there is nothing to compare against, so every
+update is rejected with a `403`.
 
 ## Talking to it
 

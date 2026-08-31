@@ -13,14 +13,17 @@ class TelegramWebhook extends Command
      *
      * @var string
      */
-    protected $signature = 'telegram:webhook {url? : The public HTTPS URL of the webhook route} {--remove : Stop delivering updates to the webhook}';
+    protected $signature = 'telegram:webhook
+                            {url? : The public HTTPS URL of the webhook route}
+                            {--regenerate : Ignore the configured secret and register a fresh one}
+                            {--remove : Stop delivering updates to the webhook}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Register or remove the Telegram webhook';
+    protected $description = 'Register or remove the Telegram webhook and print its secret token';
 
     /**
      * Execute the console command.
@@ -35,19 +38,26 @@ class TelegramWebhook extends Command
             return self::SUCCESS;
         }
 
+        $configured = (string) config('services.telegram.webhook_secret');
+        $isGenerated = $configured === '' || $this->option('regenerate');
+
+        $secret = $isGenerated ? Str::random(64) : $configured;
+
         $url = $this->argument('url') ?? route('telegram.webhook');
-        $secret = (string) config('services.telegram.webhook_secret');
-
-        if ($secret === '') {
-            $this->components->error('Set TELEGRAM_WEBHOOK_SECRET in your .env first, for example:');
-            $this->line('  TELEGRAM_WEBHOOK_SECRET='.Str::random(32));
-
-            return self::FAILURE;
-        }
 
         $telegram->setWebhook($url, $secret);
 
         $this->components->info("Webhook registered: {$url}");
+
+        if (! $isGenerated) {
+            $this->components->info('Registered with the secret already in TELEGRAM_WEBHOOK_SECRET.');
+
+            return self::SUCCESS;
+        }
+
+        $this->components->warn('Add this to your .env — the webhook rejects every update until you do:');
+        $this->line('  TELEGRAM_WEBHOOK_SECRET='.$secret);
+        $this->newLine();
 
         return self::SUCCESS;
     }

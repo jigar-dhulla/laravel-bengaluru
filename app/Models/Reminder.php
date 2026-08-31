@@ -49,6 +49,16 @@ class Reminder extends Model
         $query->whereNull('delivered_at');
     }
 
+    /**
+     * Scope the query to reminders that have already been sent.
+     *
+     * @param  Builder<$this>  $query
+     */
+    public function scopeDelivered(Builder $query): void
+    {
+        $query->whereNotNull('delivered_at');
+    }
+
     protected function casts(): array
     {
         return [

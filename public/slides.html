@@ -342,8 +342,9 @@
 
   /* ---------- the closing QR ---------- */
 
+  .body.qr-only { align-content: stretch; justify-items: center; }
   .qr {
-    width: min(82vh, 82vw);
+    height: 100%;
     max-width: 100%;
     aspect-ratio: 1;
     background: #fff;
@@ -431,11 +432,7 @@
 
   .card .term { font-size: .68em; padding: .9em 1em; }
 
-  .meta { display: grid; gap: .3em; }
-  .who { font-family: var(--display); font-stretch: 108%; font-weight: 700; font-size: 1.3em; }
   .where { font-family: var(--mono); font-size: .78em; color: var(--fog); letter-spacing: .1em; }
-  .hint { font-family: var(--mono); font-size: .74em; color: var(--fog); letter-spacing: .1em; }
-  .edit { border-bottom: 1px dashed var(--ember); }
   a { color: var(--signal); text-decoration-thickness: 1px; text-underline-offset: .2em; }
 
   /* ---------- chrome ---------- */
@@ -600,7 +597,7 @@
       <li data-n="02"><strong>How it works</strong><span>webhook, job, agent, reply</span></li>
       <li data-n="03"><strong>Code</strong><span>webhook, service, agent, tool</span></li>
       <li data-n="04"><strong>Use cases</strong><span>CRM, CMS, internal tools, workflows</span></li>
-      <li data-n="05"><strong>WhatsApp</strong><span>the same agent, another app</span></li>
+      <li data-n="05"><strong>Where next</strong><span>Telegram was just the door</span></li>
     </ul>
   </div>
 </section>
@@ -1303,16 +1300,12 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <!-- 21 ................................................................... close -->
 <section class="slide" data-title="Go build one">
   <header class="rail">
-    <span class="kicker">Thanks</span>
+    <span class="kicker">Where next</span>
   </header>
   <div class="body split center">
     <div class="col">
       <h1>Go build<br>one.</h1>
-      <div class="meta">
-        <span class="who">Jigar Dhulla</span>
-        <!-- EDIT ME: repo and slides URL -->
-        <span class="where"><span class="edit">github.com/jigar-dhulla/laravel-bengaluru</span></span>
-      </div>
+      <span class="where">github.com/jigar-dhulla/laravel-bengaluru</span>
       <p class="fine">A bot token, one API key, one public URL.</p>
     </div>
     <div class="stack">
@@ -1323,7 +1316,6 @@ deleteWebhook    <span class="dim">stop it</span></pre>
         <div class="row"><b>write</b><span>a service for their API, a route for their signature</span></div>
       </div>
       <p class="fine"><em>The interface is the cheap part now.</em></p>
-      <p class="hint">Questions?</p>
     </div>
   </div>
 </section>
@@ -1364,8 +1356,12 @@ deleteWebhook    <span class="dim">stop it</span></pre>
   </div>
 </section>
 <!-- 23 ............................................................... thank you -->
-<section class="slide plain" data-title="Thank you">
-  <div class="body center">
+<section class="slide" data-title="Thank you">
+  <header class="rail">
+    <span class="kicker">Thanks</span>
+    <span class="timing">Questions?</span>
+  </header>
+  <div class="body qr-only">
     <div class="qr" id="qr" role="img" aria-label="A QR code linking to the thank you page, with links to Twitter, these slides and both repositories"></div>
   </div>
 </section>

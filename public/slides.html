@@ -21,7 +21,7 @@
     --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
     /* show -> and => literally; ligatures read as maths on a projector */
     --no-liga: none;
-    --fs: clamp(14px, min(2.02vh, 1.16vw), 25px);
+    --fs: clamp(12px, min(2.24vh, 1.28vw), 27px);
   }
 
   * { box-sizing: border-box; }
@@ -105,7 +105,7 @@
 
   p { margin: 0; max-width: 46ch; }
   .lede { font-size: 1.12em; color: #C4D2DD; max-width: 42ch; }
-  .fine { font-size: .82em; color: var(--fog); max-width: 52ch; }
+  .fine { font-size: .86em; color: var(--fog); max-width: 52ch; }
   em { color: var(--paper); font-style: normal; box-shadow: inset 0 -.4em 0 rgba(52,181,238,.18); }
 
   ul.beats { margin: 0; padding: 0; list-style: none; display: grid; gap: 1.15em; max-width: 40ch; }
@@ -150,7 +150,8 @@
 
   pre.code {
     font-family: var(--mono);
-    font-size: .78em;
+    font-size: .73em;
+    font-weight: 500;
     line-height: 1.7;
     white-space: normal;
     margin: 0;
@@ -165,7 +166,7 @@
   }
   pre.code .ln { display: block; white-space: pre; padding: 0 1.6em; }
   pre.code .hl { background: rgba(52,181,238,.11); box-shadow: inset 2px 0 0 var(--signal); }
-  pre.code.tall { font-size: .73em; }
+  pre.code.tall { font-size: .68em; line-height: 1.58; }
   pre.code .path {
     display: block;
     padding: 0 1.6em .9em;
@@ -202,7 +203,7 @@
     letter-spacing: .16em;
     color: var(--signal);
   }
-  .card p { font-size: .92em; color: #B9C7D3; max-width: none; }
+  .card p { font-size: .95em; color: #B9C7D3; max-width: none; }
   .card code { font-family: var(--mono); font-size: .88em; color: var(--paper); }
   .card.accent { border-color: rgba(255,107,74,.45); }
   .card.accent .tag { color: var(--ember); }
@@ -284,7 +285,8 @@
 
   .term {
     font-family: var(--mono);
-    font-size: .75em;
+    font-size: .72em;
+    font-weight: 500;
     line-height: 1.72;
     max-height: 100%;
     min-height: 0;
@@ -304,14 +306,14 @@
   .rows { display: grid; gap: .5em; }
   .row {
     display: grid;
-    grid-template-columns: 2.4em 1fr;
+    grid-template-columns: 3.1em 1fr;
     gap: .8em;
     align-items: baseline;
     padding: .55em .9em;
     background: var(--ink-1);
     border: 1px solid var(--line);
     border-radius: 8px;
-    font-size: .9em;
+    font-size: .94em;
   }
   .row b { font-family: var(--mono); font-size: .82em; color: var(--signal); font-weight: 500; }
   .row span { color: #B9C7D3; }
@@ -327,8 +329,29 @@
   .body.duo { grid-template-rows: auto minmax(0, 1fr); gap: 1.8vh; }
   .duo .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 2vw; min-height: 0; }
   /* two classes on one slide, so this runs a size below the other code blocks */
-  .duo .pair pre.code { font-size: .66em; max-height: 100%; }
+  .duo .pair pre.code { font-size: .68em; line-height: 1.55; max-height: 100%; }
   .duo h2 { font-size: 1.75em; max-width: none; }
+
+  /* ---------- what is coming ---------- */
+
+  .body.plan { align-content: center; gap: 3.2vh; }
+  .plan ul.beats { max-width: none; gap: 1.35em; font-size: 1.3em; }
+  .plan ul.beats li { grid-template-columns: 2.4em 12ch 1fr; gap: .8em; }
+  .plan ul.beats strong { color: var(--paper); font-weight: 700; }
+  .plan ul.beats span { color: var(--fog); }
+
+  /* ---------- the closing QR ---------- */
+
+  .qr {
+    width: min(82vh, 82vw);
+    max-width: 100%;
+    aspect-ratio: 1;
+    background: #fff;
+    border-radius: 2vmin;
+    padding: 1.4vmin;
+  }
+  .qr svg { width: 100%; height: 100%; display: block; }
+  .qr-note { color: var(--ink); font-size: 1.1em; padding: 2em; max-width: none; }
 
   figure { margin: 0; display: grid; gap: 1em; justify-items: center; min-height: 0; }
   figure svg { width: 100%; max-width: 100%; height: auto; max-height: 62vh; }
@@ -481,8 +504,7 @@
 </style>
 
 <main class="deck">
-
-<!-- 1 ............................................................ title -->
+<!-- 1 .................................................................... title -->
 <section class="slide" data-title="Building an agentic Telegram bot">
   <header class="rail">
     <span class="kicker">Bengaluru Tech Week &nbsp;·&nbsp; <b/>Laravel Bengaluru</b></span>
@@ -501,26 +523,45 @@
     </div>
   </div>
 </section>
-
-<!-- 2 ............................................................. demo -->
+<!-- 2 ................................................................. about me -->
+<section class="slide" data-title="Jigar Dhulla">
+  <header class="rail">
+    <span class="kicker">About</span>
+  </header>
+  <div class="body bio">
+    <div class="portrait is-missing">
+      <img src="avatar.jpg" alt="Jigar Dhulla">
+      <span class="initials">JD</span>
+    </div>
+    <div class="col">
+      <h2>Jigar Dhulla</h2>
+      <p class="lede">PHP Evangelist.</p>
+      <div class="rows">
+        <div class="row"><b>work</b><span>Engineering Manager @ Densou</span></div>
+        <div class="row"><b>into</b><span>Laravel, PHP, Docker, AWS, AdTech, Open Source</span></div>
+        <div class="row"><b>twitter</b><span>@jigar_dhulla</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- 3 ..................................................................... demo -->
 <section class="slide plain" data-title="Demo">
   <div class="body center">
     <h1>Demo</h1>
   </div>
 </section>
-
-<!-- 3 ........................................................ use cases -->
+<!-- 4 ................................................................. why chat -->
 <section class="slide" data-title="Where chat beats a screen">
   <header class="rail">
-    <span class="kicker">Use cases</span>
+    <span class="kicker">Why chat</span>
   </header>
   <div class="body split center">
     <div class="col">
       <h2>Where chat beats a screen</h2>
       <ul class="beats">
         <li data-n="01"><span><strong>The CRUD nobody wants to build a UI for</strong></span></li>
-        <li data-n="02"><span><strong>People already in chat all day</strong> — ops, sales, support</span></li>
-        <li data-n="03"><span><strong>Anyone away from a desk</strong> — ask, log, approve, from a phone</span></li>
+        <li data-n="02"><span><strong>People already in chat all day</strong></span></li>
+        <li data-n="03"><span><strong>Anyone away from a desk</strong></span></li>
       </ul>
     </div>
     <div class="cards two">
@@ -547,31 +588,24 @@
     </div>
   </div>
 </section>
-
-<!-- 4 ......................................................... about me -->
-<section class="slide" data-title="Jigar Dhulla">
+<!-- 5 ........................................................... what is coming -->
+<section class="slide" data-title="What is coming">
   <header class="rail">
-    <span class="kicker">About</span>
+    <span class="kicker">The plan</span>
   </header>
-  <div class="body bio">
-    <div class="portrait is-missing">
-      <img src="avatar.jpg" alt="Jigar Dhulla">
-      <span class="initials">JD</span>
-    </div>
-    <div class="col">
-      <h2>Jigar Dhulla</h2>
-      <p class="lede">PHP Evangelist.</p>
-      <div class="rows">
-        <div class="row"><b>work</b><span>Engineering Manager @ Densou</span></div>
-        <div class="row"><b>into</b><span>Laravel, PHP, Docker, AWS, AdTech, Digital Marketing, Open Source</span></div>
-        <div class="row"><b>twitter</b><span>@jigar_dhulla</span></div>
-      </div>
-    </div>
+  <div class="body plan">
+    <h2>What is coming</h2>
+    <ul class="beats">
+      <li data-n="01"><strong>Setup</strong><span>Laravel, Telegram, laravel/ai</span></li>
+      <li data-n="02"><strong>How it works</strong><span>webhook, job, agent, reply</span></li>
+      <li data-n="03"><strong>Code</strong><span>webhook, service, agent, tool</span></li>
+      <li data-n="04"><strong>Use cases</strong><span>CRM, CMS, internal tools, workflows</span></li>
+      <li data-n="05"><strong>WhatsApp</strong><span>the same agent, another app</span></li>
+    </ul>
   </div>
 </section>
-
-<!-- 5 ................................................... setup: laravel -->
-<section class="slide" data-title="Setup — Laravel">
+<!-- 6 ........................................................... setup: laravel -->
+<section class="slide" data-title="Setup: Laravel">
   <header class="rail">
     <span class="kicker">Setup &nbsp;·&nbsp; <b>Laravel</b></span>
     <span class="timing">migrations</span>
@@ -582,11 +616,10 @@
       <pre class="term"><span class="you">$</span> composer install
 <span class="you">$</span> php artisan migrate</pre>
       <div class="rows">
-        <div class="row"><b>chat</b><span>one row per person, keyed on their Telegram id</span></div>
-        <div class="row"><b>data</b><span>your real domain — the agent only reaches it through tools</span></div>
-        <div class="row"><b>index</b><span>the scheduler asks "what is due?" every minute</span></div>
+        <div class="row"><b>chat</b><span>one row per person, by Telegram id</span></div>
+        <div class="row"><b>data</b><span>your own tables. Here, one for reminders</span></div>
+        <div class="row"><b>index</b><span>the scheduler asks what is due</span></div>
       </div>
-      <p class="fine">A third pair of tables arrives with the SDK: <code>agent_conversations</code> and its messages.</p>
     </div>
     <pre class="code"><span class="path">database/migrations/</span><span class="ln"><span class="t">Schema</span>::create(<span class="s">'telegram_chats'</span>, <span class="k">function</span> (<span class="t">Blueprint</span> $table) {</span>
 <span class="ln">    $table-&gt;id();</span>
@@ -608,9 +641,8 @@
 <span class="ln">});</span></pre>
   </div>
 </section>
-
-<!-- 6 .................................................... setup: models -->
-<section class="slide" data-title="Setup — Models">
+<!-- 7 ............................................................ setup: models -->
+<section class="slide" data-title="Setup: Models">
   <header class="rail">
     <span class="kicker">Setup &nbsp;·&nbsp; <b>Laravel</b></span>
     <span class="timing">models</span>
@@ -619,11 +651,11 @@
     <div class="col">
       <h2>Two models, one relationship that matters</h2>
       <div class="rows">
-        <div class="row"><b>link</b><span>a tool reaches rows as <code>$chat-&gt;reminders()</code>, never <code>Reminder::</code></span></div>
-        <div class="row"><b>scope</b><span>the query lives in the model, so the tool stays one line</span></div>
-        <div class="row"><b>casts</b><span>dates come back as objects, ready to format in a reply</span></div>
+        <div class="row"><b>link</b><span>tools reach rows as <code>$chat-&gt;reminders()</code></span></div>
+        <div class="row"><b>scope</b><span>the query lives in the model</span></div>
+        <div class="row"><b>casts</b><span>dates come back as objects</span></div>
       </div>
-      <p class="fine">No policy class here — the relationship <em>is</em> the authorisation. Scoped this way, the model was never given a way to name another chat's row.</p>
+      <p class="fine">No policy class. The relationship <em>is</em> the authorisation.</p>
     </div>
     <pre class="code tall"><span class="path">app/Models/TelegramChat.php &nbsp;·&nbsp; app/Models/Reminder.php</span><span class="ln"><span class="k">class</span> <span class="t">TelegramChat</span> <span class="k">extends</span> <span class="t">Model</span></span>
 <span class="ln">{</span>
@@ -655,9 +687,8 @@
 <span class="ln">}</span></pre>
   </div>
 </section>
-
-<!-- 7 ................................................. setup: botfather -->
-<section class="slide" data-title="Setup — @BotFather">
+<!-- 8 ......................................................... setup: botfather -->
+<section class="slide" data-title="Setup: @BotFather">
   <header class="rail">
     <span class="kicker">Setup &nbsp;·&nbsp; <b>Telegram</b></span>
     <span class="timing">@BotFather</span>
@@ -670,7 +701,7 @@
         <div class="row"><b>token</b><span>the API key comes straight back in the chat</span></div>
         <div class="row"><b>tweak</b><span><code>/setcommands</code>, <code>/setdescription</code>, <code>/revoke</code></span></div>
       </div>
-      <p class="fine">That token is the entire authentication story for the Bot API — anyone holding it <em>is</em> your bot. Into <code>.env</code>, never into a repo.</p>
+      <p class="fine">Anyone holding that token <em>is</em> your bot. Into <code>.env</code>, never a repo.</p>
     </div>
     <div class="chat" aria-label="A conversation with @BotFather: the /newbot command, a name, a username, and the API token it returns">
       <div class="bubble me" style="--i:0">/newbot</div>
@@ -683,9 +714,8 @@
     </div>
   </div>
 </section>
-
-<!-- 8 .................................................. setup: telegram -->
-<section class="slide" data-title="Setup — Telegram">
+<!-- 9 .......................................................... setup: telegram -->
+<section class="slide" data-title="Setup: Telegram">
   <header class="rail">
     <span class="kicker">Setup &nbsp;·&nbsp; <b>Telegram</b></span>
     <span class="timing">the service layer</span>
@@ -699,9 +729,9 @@ setWebhook       <span class="dim">point Telegram at your URL</span>
 deleteWebhook    <span class="dim">stop it</span></pre>
       <div class="rows">
         <div class="row"><b>setup</b><span><code>php artisan telegram:webhook &lt;url&gt;</code></span></div>
-        <div class="row"><b>secret</b><span>it prints a <code>TELEGRAM_WEBHOOK_SECRET=</code> line to copy</span></div>
+        <div class="row"><b>secret</b><span>it prints the <code>.env</code> line to copy</span></div>
       </div>
-      <p class="fine">The token sits in the URL of every call, so scrub it before anything reaches a log.</p>
+      <p class="fine">Scrub the token before anything is logged.</p>
     </div>
     <pre class="code"><span class="path">app/Services/Telegram.php</span><span class="ln"><span class="k">public function</span> sendTyping(<span class="k">int</span> $chatId): <span class="k">void</span></span>
 <span class="ln">{</span>
@@ -724,9 +754,8 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="ln">}</span></pre>
   </div>
 </section>
-
-<!-- 9 ................................................ setup: laravel/ai -->
-<section class="slide" data-title="Setup — laravel/ai">
+<!-- 10 ....................................................... setup: laravel/ai -->
+<section class="slide" data-title="Setup: laravel/ai">
   <header class="rail">
     <span class="kicker">Setup &nbsp;·&nbsp; <b>laravel/ai</b></span>
   </header>
@@ -741,8 +770,8 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="you">$</span> php artisan make:agent TelegramAssistant
 <span class="you">$</span> php artisan make:tool CreateReminder</pre>
       <div class="rows">
-        <div class="row"><b>traits</b><span><code>Promptable</code>, <code>RemembersConversations</code> do the work</span></div>
-        <div class="row"><b>config</b><span><code>config/ai.php</code> — provider, failover, models</span></div>
+        <div class="row"><b>traits</b><span><code>Promptable</code>, <code>RemembersConversations</code></span></div>
+        <div class="row"><b>config</b><span>provider, failover, models</span></div>
       </div>
     </div>
     <pre class="code"><span class="path">Laravel\Ai\Contracts</span><span class="ln"><span class="k">interface</span> <span class="t">Agent</span></span>
@@ -768,8 +797,7 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="ln">}</span></pre>
   </div>
 </section>
-
-<!-- 10 ............................................................ flow -->
+<!-- 11 .................................................................... flow -->
 <section class="slide" data-title="How it works">
   <header class="rail">
     <span class="kicker">How it works</span>
@@ -843,12 +871,11 @@ deleteWebhook    <span class="dim">stop it</span></pre>
         <path class="d-back" d="M300 356 L120 356 L120 150" marker-end="url(#ar-back)"></path>
         <text class="d-label" x="132" y="266" text-anchor="start">reply · sendMessage</text>
       </svg>
-      <figcaption>Everything after the route runs outside the request. Reminders take a second way out: a scheduled command, with no update to answer.</figcaption>
+      <figcaption>Everything after the route runs outside the request.</figcaption>
     </figure>
   </div>
 </section>
-
-<!-- 11 ................................................... code: webhook -->
+<!-- 12 ........................................................... code: webhook -->
 <section class="slide" data-title="The webhook">
   <header class="rail">
     <span class="kicker">Code &nbsp;·&nbsp; <b>webhook</b></span>
@@ -881,8 +908,7 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="ln">}</span></pre>
   </div>
 </section>
-
-<!-- 12 ................................................... code: service -->
+<!-- 13 ........................................................... code: service -->
 <section class="slide" data-title="The bot service">
   <header class="rail">
     <span class="kicker">Code &nbsp;·&nbsp; <b>service</b></span>
@@ -892,10 +918,9 @@ deleteWebhook    <span class="dim">stop it</span></pre>
       <h2>One class knows about both sides</h2>
       <div class="rows">
         <div class="row"><b>chat</b><span><code>firstOrCreate</code> on the Telegram id</span></div>
-        <div class="row"><b>guard</b><span>an update carrying no text is never answered</span></div>
-        <div class="row"><b>table</b><span>every command the bot knows, in one <code>match</code></span></div>
+        <div class="row"><b>guard</b><span>no text, no reply</span></div>
+        <div class="row"><b>table</b><span>every command in one <code>match</code></span></div>
       </div>
-      <p class="fine">Two commands, two arms. The moment one of them takes an argument &mdash; <code>/remind …</code> &mdash; is the moment to parse before dispatching. <em>Not before</em>.</p>
     </div>
     <pre class="code tall"><span class="path">app/Services/TelegramBot.php</span><span class="ln"><span class="k">private const</span> WELCOME = <span class="s">'Hi! I am a reminder bot …'</span>;</span>
 <span class="ln"> </span>
@@ -923,8 +948,7 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="ln">}</span></pre>
   </div>
 </section>
-
-<!-- 13 ............................................. code: the default arm -->
+<!-- 14 ................................................... code: the default arm -->
 <section class="slide" data-title="Continue, or start">
   <header class="rail">
     <span class="kicker">Code &nbsp;·&nbsp; <b>service</b></span>
@@ -934,11 +958,11 @@ deleteWebhook    <span class="dim">stop it</span></pre>
     <div class="col">
       <h2>Continue the conversation, or start one</h2>
       <div class="rows">
-        <div class="row"><b>typing</b><span>the dots cover a model call, so they go out here</span></div>
-        <div class="row"><b>agent</b><span>continue on the stored id, or open a conversation</span></div>
+        <div class="row"><b>typing</b><span>the dots cover a model call</span></div>
+        <div class="row"><b>agent</b><span>continue the stored id, or start one</span></div>
         <div class="row"><b>memory</b><span>store the returned <code>conversationId</code></span></div>
       </div>
-      <p class="fine">That column is what makes <code>/forget</code> possible. The SDK will happily remember a conversation, but it offers nothing to forget one &mdash; so the boundary has to live on <em>our</em> side of the line.</p>
+      <p class="fine">The SDK cannot forget a conversation, so that column is <em>ours</em>.</p>
     </div>
     <pre class="code tall"><span class="path">app/Services/TelegramBot.php</span><span class="ln"><span class="k">private function</span> forget(<span class="t">TelegramChat</span> $chat): <span class="k">string</span></span>
 <span class="ln">{</span>
@@ -967,8 +991,7 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="ln">}</span></pre>
   </div>
 </section>
-
-<!-- 14 ..................................................... code: agent -->
+<!-- 15 ............................................................. code: agent -->
 <section class="slide" data-title="The agent">
   <header class="rail">
     <span class="kicker">Code &nbsp;·&nbsp; <b>agent</b></span>
@@ -977,7 +1000,7 @@ deleteWebhook    <span class="dim">stop it</span></pre>
     <div class="col">
       <h2>The agent is one class</h2>
       <div class="rows">
-        <div class="row"><b>prompt</b><span>how to behave — and what time it is</span></div>
+        <div class="row"><b>prompt</b><span>how to behave, and what time it is</span></div>
         <div class="row"><b>tools</b><span>what it is allowed to do</span></div>
         <div class="row"><b>memory</b><span>one trait, conversations persisted</span></div>
         <div class="row"><b>models</b><span>a provider list, failed over in order</span></div>
@@ -1012,8 +1035,7 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="ln">}</span></pre>
   </div>
 </section>
-
-<!-- 15 ...................................................... code: tool -->
+<!-- 16 .............................................................. code: tool -->
 <section class="slide" data-title="A tool">
   <header class="rail">
     <span class="kicker">Code &nbsp;·&nbsp; <b>tool</b></span>
@@ -1024,7 +1046,7 @@ deleteWebhook    <span class="dim">stop it</span></pre>
       <div class="rows">
         <div class="row"><b>schema</b><span>the arguments it is allowed to send</span></div>
         <div class="row"><b>scoped</b><span>the chat is injected, not asked for</span></div>
-        <div class="row"><b>return</b><span>a string — the model reads it next</span></div>
+        <div class="row"><b>return</b><span>a string the model reads next</span></div>
       </div>
       <p class="fine">A failed rule is not an error to log. It is the model's next instruction.</p>
     </div>
@@ -1034,11 +1056,9 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="ln"> </span>
 <span class="ln">    <span class="k">public function</span> schema(<span class="t">JsonSchema</span> $schema): <span class="k">array</span></span>
 <span class="ln">    {</span>
-<span class="ln">        <span class="k">return</span> [</span>
-<span class="ln">            <span class="s">'body'</span> =&gt; $schema-&gt;string()-&gt;required(),</span>
-<span class="ln hl">            <span class="s">'remind_at'</span> =&gt; $schema-&gt;string()</span>
-<span class="ln hl">                -&gt;description(<span class="s">'as YYYY-MM-DD HH:MM'</span>)-&gt;required(),</span>
-<span class="ln">        ];</span>
+<span class="ln">        <span class="k">return</span> [<span class="s">'body'</span> =&gt; $schema-&gt;string()-&gt;required(),</span>
+<span class="ln hl">                <span class="s">'remind_at'</span> =&gt; $schema-&gt;string()-&gt;required()</span>
+<span class="ln hl">                    -&gt;description(<span class="s">'as YYYY-MM-DD HH:MM'</span>)];</span>
 <span class="ln">    }</span>
 <span class="ln"> </span>
 <span class="ln">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span></span>
@@ -1059,15 +1079,14 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="ln">}</span></pre>
   </div>
 </section>
-
-<!-- 16 ..................................................... use case: crm -->
-<section class="slide" data-title="CRM — log that call">
+<!-- 17 ........................................................... use case: crm -->
+<section class="slide" data-title="Use cases: CRM">
   <header class="rail">
     <span class="kicker">Use cases &nbsp;·&nbsp; <b>crm</b></span>
     <span class="timing">the relationship is the authorisation</span>
   </header>
   <div class="body duo">
-    <h2>Log that call, scoped to the rep who is typing</h2>
+    <h2>Log that call, scoped to the rep</h2>
     <div class="pair">
       <pre class="code tall"><span class="path">app/Ai/Agents/SalesCoach.php</span><span class="ln"><span class="k">class</span> <span class="t">SalesCoach</span> <span class="k">implements</span> <span class="t">Agent</span>, <span class="t">HasTools</span></span>
 <span class="ln">{</span>
@@ -1103,7 +1122,6 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="ln">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span></span>
 <span class="ln">    {</span>
 <span class="ln">        $deal = $this-&gt;rep-&gt;deals()-&gt;find($request-&gt;deal_id);</span>
-<span class="ln"> </span>
 <span class="ln">        <span class="k">if</span> (! $deal) {</span>
 <span class="ln">            <span class="k">return</span> <span class="s">'Not one of your deals. Ask which one.'</span>;</span>
 <span class="ln">        }</span>
@@ -1116,15 +1134,14 @@ deleteWebhook    <span class="dim">stop it</span></pre>
     </div>
   </div>
 </section>
-
-<!-- 17 ..................................................... use case: cms -->
-<section class="slide" data-title="CMS — fix the typo">
+<!-- 18 ........................................................... use case: cms -->
+<section class="slide" data-title="Use cases: CMS">
   <header class="rail">
     <span class="kicker">Use cases &nbsp;·&nbsp; <b>cms</b></span>
-    <span class="timing">the policy that already guards your admin</span>
+    <span class="timing">your existing policy</span>
   </header>
   <div class="body duo">
-    <h2>Fix the typo, behind the policy you already wrote</h2>
+    <h2>Fix the typo, behind your policy</h2>
     <div class="pair">
       <pre class="code tall"><span class="path">app/Ai/Agents/EditorAssistant.php</span><span class="ln"><span class="k">class</span> <span class="t">EditorAssistant</span> <span class="k">implements</span> <span class="t">Agent</span>, <span class="t">HasTools</span></span>
 <span class="ln">{</span>
@@ -1160,7 +1177,6 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="ln">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span></span>
 <span class="ln">    {</span>
 <span class="ln">        $page = <span class="t">Page</span>::whereSlug($request-&gt;slug)-&gt;sole();</span>
-<span class="ln"> </span>
 <span class="ln">        <span class="k">if</span> (<span class="t">Gate</span>::forUser($this-&gt;editor)-&gt;denies(<span class="s">'update'</span>, $page)) {</span>
 <span class="ln">            <span class="k">return</span> <span class="s">'You cannot edit that page.'</span>;</span>
 <span class="ln">        }</span>
@@ -1173,9 +1189,8 @@ deleteWebhook    <span class="dim">stop it</span></pre>
     </div>
   </div>
 </section>
-
-<!-- 18 .......................................... use case: internal tools -->
-<section class="slide" data-title="Internal tools — the schema is the form">
+<!-- 19 ................................................ use case: internal tools -->
+<section class="slide" data-title="Use cases: internal tools">
   <header class="rail">
     <span class="kicker">Use cases &nbsp;·&nbsp; <b>internal tools</b></span>
     <span class="timing">any crud</span>
@@ -1219,7 +1234,6 @@ deleteWebhook    <span class="dim">stop it</span></pre>
 <span class="ln">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span></span>
 <span class="ln">    {</span>
 <span class="ln">        $item = $this-&gt;site-&gt;items()-&gt;whereSku($request-&gt;sku)-&gt;first();</span>
-<span class="ln"> </span>
 <span class="ln">        <span class="k">if</span> (! $item) {</span>
 <span class="ln">            <span class="k">return</span> <span class="s">"No {$request-&gt;sku} here. Read the SKU back to me."</span>;</span>
 <span class="ln">        }</span>
@@ -1230,9 +1244,8 @@ deleteWebhook    <span class="dim">stop it</span></pre>
     </div>
   </div>
 </section>
-
-<!-- 19 ............................................... use case: workflows -->
-<section class="slide" data-title="Workflows — a human says yes">
+<!-- 20 ..................................................... use case: workflows -->
+<section class="slide" data-title="Use cases: workflows">
   <header class="rail">
     <span class="kicker">Use cases &nbsp;·&nbsp; <b>real workflows</b></span>
     <span class="timing">Approvable</span>
@@ -1287,8 +1300,7 @@ deleteWebhook    <span class="dim">stop it</span></pre>
     </div>
   </div>
 </section>
-
-<!-- 20 ........................................................... close -->
+<!-- 21 ................................................................... close -->
 <section class="slide" data-title="Go build one">
   <header class="rail">
     <span class="kicker">Thanks</span>
@@ -1301,25 +1313,67 @@ deleteWebhook    <span class="dim">stop it</span></pre>
         <!-- EDIT ME: repo and slides URL -->
         <span class="where"><span class="edit">github.com/jigar-dhulla/laravel-bengaluru</span></span>
       </div>
-      <p class="fine">A bot token, one API key, one public URL. Ten minutes on whichever platform you picked.</p>
+      <p class="fine">A bot token, one API key, one public URL.</p>
     </div>
     <div class="stack">
       <h3>Telegram was just the door</h3>
       <div class="rows">
-        <div class="row"><b>swap</b><span>Slack, Discord, Google&nbsp;Chat, Teams &mdash; wherever your users already are</span></div>
+        <div class="row"><b>swap</b><span>Slack, Discord, Google&nbsp;Chat, Teams. Wherever your users are</span></div>
         <div class="row"><b>keep</b><span>the models, the agent, the tools, the queued job</span></div>
-        <div class="row"><b>write</b><span>a service for their API, a route that checks their signature</span></div>
+        <div class="row"><b>write</b><span>a service for their API, a route for their signature</span></div>
       </div>
-      <p class="fine">That is the whole port. <em>The interface is the cheap part now</em> — so pick the app your users have open all day, and stop building screens for the ones they don't.</p>
+      <p class="fine"><em>The interface is the cheap part now.</em></p>
       <p class="hint">Questions?</p>
     </div>
+  </div>
+</section>
+<!-- 22 ................................................................ whatsapp -->
+<section class="slide" data-title="WhatsApp">
+  <header class="rail">
+    <span class="kicker">WhatsApp</span>
+    <span class="timing">jigar-dhulla/laravel-whatsapp-ai-agent</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>The same agent, on WhatsApp</h2>
+      <pre class="term"><span class="you">$</span> composer require \
+      jigar-dhulla/laravel-whatsapp-ai-agent
+<span class="you">$</span> php artisan wa:setup
+<span class="you">$</span> php artisan wa:listen</pre>
+      <div class="rows">
+        <div class="row"><b>poll</b><span>messages come from a wacli database</span></div>
+        <div class="row"><b>route</b><span>a trigger word and a chat id pick the agent</span></div>
+        <div class="row"><b>queue</b><span>one job per match, so agents run in parallel</span></div>
+        <div class="row"><b>memory</b><span>one trait replays the chat history</span></div>
+      </div>
+    </div>
+    <pre class="code"><span class="path">config/whatsapp-agent.php</span><span class="ln"><span class="s">'agents'</span> =&gt; [</span>
+<span class="ln">    [</span>
+<span class="ln hl">        <span class="s">'agent'</span>    =&gt; <span class="t">ReminderAgent</span>::<span class="k">class</span>,   <span class="c">// any Contracts\Agent</span></span>
+<span class="ln">        <span class="s">'triggers'</span> =&gt; [<span class="s">'@remind'</span>],          <span class="c">// [] matches everything</span></span>
+<span class="ln">        <span class="s">'chats'</span>    =&gt; [<span class="s">'919812345678@s.whatsapp.net'</span>],</span>
+<span class="ln">        <span class="s">'groups'</span>   =&gt; [<span class="s">'laravel-blr@g.us'</span>],</span>
+<span class="ln">    ],</span>
+<span class="ln">],</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">class</span> <span class="t">ReminderAgent</span> <span class="k">implements</span> <span class="t">Agent</span>, <span class="t">Conversational</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">use</span> <span class="t">Promptable</span>;</span>
+<span class="ln hl">    <span class="k">use</span> <span class="t">RemembersWhatsAppConversations</span>;   <span class="c">// the whole thread</span></span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+<!-- 23 ............................................................... thank you -->
+<section class="slide plain" data-title="Thank you">
+  <div class="body center">
+    <div class="qr" id="qr" role="img" aria-label="A QR code linking to the thank you page, with links to Twitter, these slides and both repositories"></div>
   </div>
 </section>
 
 </main>
 
 <div class="progress" role="presentation"></div>
-<p class="hud"><span class="hud-n">1</span> / <span class="hud-total">20</span></p>
+<p class="hud"><span class="hud-n">1</span> / <span class="hud-total">23</span></p>
 <nav class="nav" aria-label="Slides">
   <button type="button" data-prev title="Previous slide (←)">&#8592;</button>
   <button type="button" data-next title="Next slide (→)">&#8594;</button>
@@ -1438,6 +1492,384 @@ deleteWebhook    <span class="dim">stop it</span></pre>
       img.addEventListener('load', reveal);
     }
   });
+
+
+  // ---- the closing QR, built for whichever host is serving the deck ----
+
+  // Minimal QR encoder: byte mode, error correction level M, versions 1 to 9.
+  // Enough for a URL, and small enough to live inside the deck.
+  function qrModules(text) {
+    var bytes = [], i, j, c;
+    for (i = 0; i < text.length; i++) {
+      c = text.charCodeAt(i);
+      if (c < 0x80) { bytes.push(c); }
+      else if (c < 0x800) { bytes.push(0xC0 | (c >> 6), 0x80 | (c & 63)); }
+      else { bytes.push(0xE0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63)); }
+    }
+
+    // [total codewords, ec codewords per block, [[blocks, data codewords each], ...]]
+    var SPEC = [
+      [26, 10, [[1, 16]]],
+      [44, 16, [[1, 28]]],
+      [70, 26, [[1, 44]]],
+      [100, 18, [[2, 32]]],
+      [134, 24, [[2, 43]]],
+      [172, 16, [[4, 27]]],
+      [196, 18, [[4, 31]]],
+      [242, 22, [[2, 38], [2, 39]]],
+      [292, 22, [[3, 36], [2, 37]]]
+    ];
+    var ALIGN = [[], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34], [6, 22, 38], [6, 24, 42], [6, 26, 46]];
+
+    var version = 0, spec, dataCount;
+    while (version < 9) {
+      spec = SPEC[version];
+      dataCount = 0;
+      for (i = 0; i < spec[2].length; i++) { dataCount += spec[2][i][0] * spec[2][i][1]; }
+      if (bytes.length + 2 <= dataCount) { break; }
+      version++;
+    }
+    if (version >= 9) { version = 8; spec = SPEC[8]; dataCount = 182; }
+    version += 1;
+
+    // --- bit stream: mode 0100, 8 bit length, data, terminator, pad ---
+    var bits = [];
+    function push(value, length) {
+      for (var b = length - 1; b >= 0; b--) { bits.push((value >> b) & 1); }
+    }
+    push(4, 4);
+    push(bytes.length, 8);
+    for (i = 0; i < bytes.length; i++) { push(bytes[i], 8); }
+    var capacity = dataCount * 8;
+    for (i = 0; i < 4 && bits.length < capacity; i++) { bits.push(0); }
+    while (bits.length % 8) { bits.push(0); }
+    var data = [];
+    for (i = 0; i < bits.length; i += 8) {
+      var byte = 0;
+      for (j = 0; j < 8; j++) { byte = (byte << 1) | bits[i + j]; }
+      data.push(byte);
+    }
+    var pad = [0xEC, 0x11], p = 0;
+    while (data.length < dataCount) { data.push(pad[p++ % 2]); }
+
+    // --- GF(256) ---
+    var EXP = new Array(512), LOG = new Array(256), x = 1;
+    for (i = 0; i < 255; i++) {
+      EXP[i] = x; LOG[x] = i;
+      x <<= 1;
+      if (x & 0x100) { x ^= 0x11D; }
+    }
+    for (i = 255; i < 512; i++) { EXP[i] = EXP[i - 255]; }
+    function mul(a, b) { return (a === 0 || b === 0) ? 0 : EXP[LOG[a] + LOG[b]]; }
+
+    var ecCount = spec[1];
+    var gen = [1];
+    for (i = 0; i < ecCount; i++) {
+      var next = gen.concat([0]);
+      for (j = 0; j < gen.length; j++) { next[j + 1] ^= mul(gen[j], EXP[i]); }
+      gen = next;
+    }
+
+    function ecc(block) {
+      var rest = block.concat(new Array(ecCount).fill(0));
+      for (var a = 0; a < block.length; a++) {
+        var factor = rest[a];
+        if (factor === 0) { continue; }
+        for (var b = 0; b < gen.length; b++) { rest[a + b] ^= mul(gen[b], factor); }
+      }
+      return rest.slice(block.length);
+    }
+
+    // --- split into blocks, interleave ---
+    var dataBlocks = [], ecBlocks = [], at = 0;
+    for (i = 0; i < spec[2].length; i++) {
+      for (j = 0; j < spec[2][i][0]; j++) {
+        var block = data.slice(at, at + spec[2][i][1]);
+        at += spec[2][i][1];
+        dataBlocks.push(block);
+        ecBlocks.push(ecc(block));
+      }
+    }
+    var stream = [], longest = 0;
+    for (i = 0; i < dataBlocks.length; i++) { longest = Math.max(longest, dataBlocks[i].length); }
+    for (i = 0; i < longest; i++) {
+      for (j = 0; j < dataBlocks.length; j++) {
+        if (i < dataBlocks[j].length) { stream.push(dataBlocks[j][i]); }
+      }
+    }
+    for (i = 0; i < ecCount; i++) {
+      for (j = 0; j < ecBlocks.length; j++) { stream.push(ecBlocks[j][i]); }
+    }
+
+    // --- lay out the grid ---
+    var size = version * 4 + 17;
+    var grid = [], taken = [];
+    for (i = 0; i < size; i++) {
+      grid.push(new Array(size).fill(0));
+      taken.push(new Array(size).fill(false));
+    }
+    function set(row, col, dark) {
+      if (row < 0 || col < 0 || row >= size || col >= size) { return; }
+      grid[row][col] = dark ? 1 : 0;
+      taken[row][col] = true;
+    }
+    function finder(row, col) {
+      for (var r = -1; r <= 7; r++) {
+        for (var cc = -1; cc <= 7; cc++) {
+          var inner = r >= 0 && r <= 6 && cc >= 0 && cc <= 6;
+          var ring = r === 0 || r === 6 || cc === 0 || cc === 6;
+          var core = r >= 2 && r <= 4 && cc >= 2 && cc <= 4;
+          set(row + r, col + cc, inner && (ring || core));
+        }
+      }
+    }
+    finder(0, 0);
+    finder(0, size - 7);
+    finder(size - 7, 0);
+
+    for (i = 8; i < size - 8; i++) {
+      set(6, i, i % 2 === 0);
+      set(i, 6, i % 2 === 0);
+    }
+
+    var centers = ALIGN[version - 1];
+    for (i = 0; i < centers.length; i++) {
+      for (j = 0; j < centers.length; j++) {
+        var cr = centers[i], cc2 = centers[j];
+        if ((cr === 6 && cc2 === 6) || (cr === 6 && cc2 === size - 7) || (cr === size - 7 && cc2 === 6)) { continue; }
+        for (var r2 = -2; r2 <= 2; r2++) {
+          for (var c2 = -2; c2 <= 2; c2++) {
+            set(cr + r2, cc2 + c2, Math.max(Math.abs(r2), Math.abs(c2)) !== 1);
+          }
+        }
+      }
+    }
+
+    // reserve the format areas, and the version areas on 7 and up
+    for (i = 0; i < 9; i++) {
+      if (i !== 6) { set(8, i, false); set(i, 8, false); }
+    }
+    for (i = 0; i < 8; i++) {
+      set(8, size - 1 - i, false);
+      set(size - 1 - i, 8, false);
+    }
+    set(size - 8, 8, false);
+    if (version >= 7) {
+      for (i = 0; i < 6; i++) {
+        for (j = 0; j < 3; j++) {
+          set(size - 11 + j, i, false);
+          set(i, size - 11 + j, false);
+        }
+      }
+    }
+
+    // --- data, zigzag from the bottom right ---
+    var bitAt = 0, total = stream.length * 8;
+    function nextBit() {
+      if (bitAt >= total) { return 0; }
+      var bit = (stream[bitAt >> 3] >> (7 - (bitAt & 7))) & 1;
+      bitAt++;
+      return bit;
+    }
+    var up = true;
+    for (var col = size - 1; col > 0; col -= 2) {
+      if (col === 6) { col = 5; }
+      for (var step = 0; step < size; step++) {
+        var row = up ? size - 1 - step : step;
+        for (var side = 0; side < 2; side++) {
+          var cc3 = col - side;
+          if (!taken[row][cc3]) {
+            grid[row][cc3] = nextBit();
+            taken[row][cc3] = true;
+          }
+        }
+      }
+      up = !up;
+    }
+
+    // --- masking ---
+    var MASKS = [
+      function (r, c) { return (r + c) % 2 === 0; },
+      function (r) { return r % 2 === 0; },
+      function (r, c) { return c % 3 === 0; },
+      function (r, c) { return (r + c) % 3 === 0; },
+      function (r, c) { return (Math.floor(r / 2) + Math.floor(c / 3)) % 2 === 0; },
+      function (r, c) { return ((r * c) % 2) + ((r * c) % 3) === 0; },
+      function (r, c) { return (((r * c) % 2) + ((r * c) % 3)) % 2 === 0; },
+      function (r, c) { return (((r + c) % 2) + ((r * c) % 3)) % 2 === 0; }
+    ];
+
+    function format(mask) {
+      var value = mask; // level M is 00, so the five bits are 000 + mask
+      var bch = value << 10;
+      for (var b = 4; b >= 0; b--) {
+        if (bch & (1 << (b + 10))) { bch ^= 0x537 << b; }
+      }
+      return ((value << 10) | bch) ^ 0x5412;
+    }
+
+    function versionBits(v) {
+      var bch = v << 12;
+      for (var b = 5; b >= 0; b--) {
+        if (bch & (1 << (b + 12))) { bch ^= 0x1F25 << b; }
+      }
+      return (v << 12) | bch;
+    }
+
+    function penalty(m) {
+      var score = 0, r, c, run, k;
+
+      function line(get) {
+        var s = 0;
+        for (r = 0; r < size; r++) {
+          run = 1;
+          for (c = 1; c < size; c++) {
+            if (get(r, c) === get(r, c - 1)) {
+              run++;
+            } else {
+              if (run >= 5) { s += run - 2; }
+              run = 1;
+            }
+          }
+          if (run >= 5) { s += run - 2; }
+        }
+        return s;
+      }
+      score += line(function (r, c) { return m[r][c]; });
+      score += line(function (r, c) { return m[c][r]; });
+
+      for (r = 0; r < size - 1; r++) {
+        for (c = 0; c < size - 1; c++) {
+          var v = m[r][c];
+          if (v === m[r][c + 1] && v === m[r + 1][c] && v === m[r + 1][c + 1]) { score += 3; }
+        }
+      }
+
+      var FIND = [1, 0, 1, 1, 1, 0, 1];
+      function finderLike(get) {
+        var s = 0;
+        for (r = 0; r < size; r++) {
+          for (c = 0; c <= size - 7; c++) {
+            var hit = true;
+            for (k = 0; k < 7; k++) { if (get(r, c + k) !== FIND[k]) { hit = false; break; } }
+            if (!hit) { continue; }
+            var before = true, after = true;
+            for (k = 1; k <= 4; k++) {
+              if (c - k < 0 || get(r, c - k) !== 0) { before = false; break; }
+            }
+            for (k = 7; k < 11; k++) {
+              if (c + k >= size || get(r, c + k) !== 0) { after = false; break; }
+            }
+            if (before || after) { s += 40; }
+          }
+        }
+        return s;
+      }
+      score += finderLike(function (r, c) { return m[r][c]; });
+      score += finderLike(function (r, c) { return m[c][r]; });
+
+      var dark = 0;
+      for (r = 0; r < size; r++) { for (c = 0; c < size; c++) { dark += m[r][c]; } }
+      var percent = (dark * 100) / (size * size);
+      score += Math.floor(Math.abs(percent - 50) / 5) * 10;
+
+      return score;
+    }
+
+    // The format and version modules are left blank while the masks are scored,
+    // then written onto the winner. Scoring them would let the format bits, which
+    // encode the mask itself, sway the choice of mask.
+    function masked(mask) {
+      var candidate = [], r, c;
+      for (r = 0; r < size; r++) { candidate.push(grid[r].slice()); }
+      for (r = 0; r < size; r++) {
+        for (c = 0; c < size; c++) {
+          if (!isFunctionModule(r, c)) { candidate[r][c] ^= MASKS[mask](r, c) ? 1 : 0; }
+        }
+      }
+      return candidate;
+    }
+
+    function stamp(candidate, mask) {
+      var fmt = format(mask), b;
+      for (b = 0; b < 15; b++) {
+        var bit = (fmt >> b) & 1;
+        // down column 8
+        if (b < 6) { candidate[b][8] = bit; }
+        else if (b < 8) { candidate[b + 1][8] = bit; }
+        else { candidate[size - 15 + b][8] = bit; }
+        // along row 8
+        if (b < 8) { candidate[8][size - 1 - b] = bit; }
+        else if (b === 8) { candidate[8][7] = bit; }
+        else { candidate[8][14 - b] = bit; }
+      }
+      candidate[size - 8][8] = 1;
+
+      if (version >= 7) {
+        var vb = versionBits(version);
+        for (b = 0; b < 18; b++) {
+          var vbit = (vb >> b) & 1;
+          candidate[Math.floor(b / 3)][size - 11 + (b % 3)] = vbit;
+          candidate[size - 11 + (b % 3)][Math.floor(b / 3)] = vbit;
+        }
+      }
+      return candidate;
+    }
+
+    var best = null, bestScore = Infinity, bestMask = 0;
+    for (var mask = 0; mask < 8; mask++) {
+      var candidate = masked(mask);
+      var score = penalty(candidate);
+      if (score < bestScore) { bestScore = score; best = candidate; bestMask = mask; }
+    }
+    best = stamp(best, bestMask);
+
+    function isFunctionModule(row, col) {
+      // finders and separators
+      if (row < 9 && col < 9) { return true; }
+      if (row < 9 && col >= size - 8) { return true; }
+      if (row >= size - 8 && col < 9) { return true; }
+      // timing
+      if (row === 6 || col === 6) { return true; }
+      // version blocks
+      if (version >= 7) {
+        if (row < 6 && col >= size - 11 && col < size - 8) { return true; }
+        if (col < 6 && row >= size - 11 && row < size - 8) { return true; }
+      }
+      // alignment
+      var cs = ALIGN[version - 1];
+      for (var a = 0; a < cs.length; a++) {
+        for (var b = 0; b < cs.length; b++) {
+          var cr = cs[a], cc = cs[b];
+          if ((cr === 6 && cc === 6) || (cr === 6 && cc === size - 7) || (cr === size - 7 && cc === 6)) { continue; }
+          if (Math.abs(row - cr) <= 2 && Math.abs(col - cc) <= 2) { return true; }
+        }
+      }
+      return false;
+    }
+
+    return { size: size, modules: best, version: version, mask: bestMask };
+  }
+
+  var qrBox = document.getElementById('qr');
+
+  if (qrBox && /^https?:$/.test(location.protocol)) {
+    var code = qrModules(location.origin + '/thank-you');
+    var quiet = 4, span = code.size + quiet * 2, path = '', qy, qx;
+
+    for (qy = 0; qy < code.size; qy++) {
+      for (qx = 0; qx < code.size; qx++) {
+        if (code.modules[qy][qx]) {
+          path += 'M' + (qx + quiet) + ' ' + (qy + quiet) + 'h1v1h-1z';
+        }
+      }
+    }
+
+    qrBox.innerHTML = '<svg viewBox="0 0 ' + span + ' ' + span + '" shape-rendering="crispEdges">'
+      + '<path d="' + path + '" fill="#0A0F14"></path></svg>';
+  } else if (qrBox) {
+    qrBox.innerHTML = '<p class="qr-note">Serve the deck over HTTP so the QR code can point at /thank-you.</p>';
+  }
 
   go(Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1));
 }());

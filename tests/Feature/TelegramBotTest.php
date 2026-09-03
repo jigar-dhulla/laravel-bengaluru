@@ -5,6 +5,8 @@ use App\Models\TelegramChat;
 use App\Services\TelegramBot;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
+use Laravel\Ai\Models\Conversation;
 
 beforeEach(function () {
     Http::fake(['api.telegram.org/*' => Http::response(['ok' => true, 'result' => []])]);
@@ -63,6 +65,16 @@ it('continues the same conversation across messages', function () {
     app(TelegramBot::class)->handle(telegramUpdate('And again'));
 
     expect(TelegramChat::sole()->conversation_id)->toBe($first);
+});
+
+it('titles a conversation from its opening message rather than a second model call', function () {
+    TelegramAssistant::fake(['Noted.']);
+
+    $text = 'Remember I am speaking at Laravel Pune conference next month';
+
+    app(TelegramBot::class)->handle(telegramUpdate($text));
+
+    expect(Conversation::sole()->title)->toBe(Str::limit($text, 50, preserveWords: true));
 });
 
 it('starts a new conversation after /forget', function () {

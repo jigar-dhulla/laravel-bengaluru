@@ -55,6 +55,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Conversations
+    |--------------------------------------------------------------------------
+    |
+    | Titling a new conversation costs a second, synchronous model call that
+    | the user waits on, and nothing here reads the title, so it is off. The
+    | SDK then names a conversation after the message that opened it.
+    |
+    | This key is absent from the SDK's published config and its docs. It is
+    | read with a default of true, so if a future release drops it, titling
+    | simply comes back on rather than breaking.
+    |
+    */
+
+    'conversations' => [
+        'generate_title' => false,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | AI Providers
     |--------------------------------------------------------------------------
     |

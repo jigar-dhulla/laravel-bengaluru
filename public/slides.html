@@ -1,4 +1,4 @@
-<title>Bots That Do Things</title>
+<title>Agentic Telegram Bot</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -322,6 +322,14 @@
   .versus .side h3 { font-size: 1.5em; }
   .versus .side.act h3 { color: var(--signal); }
 
+  /* ---------- an agent and its tool, side by side ---------- */
+
+  .body.duo { grid-template-rows: auto minmax(0, 1fr); gap: 1.8vh; }
+  .duo .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 2vw; min-height: 0; }
+  /* two classes on one slide, so this runs a size below the other code blocks */
+  .duo .pair pre.code { font-size: .66em; max-height: 100%; }
+  .duo h2 { font-size: 1.75em; max-width: none; }
+
   figure { margin: 0; display: grid; gap: 1em; justify-items: center; min-height: 0; }
   figure svg { width: 100%; max-width: 100%; height: auto; max-height: 62vh; }
   figcaption { font-size: .84em; color: var(--fog); max-width: 70ch; text-align: center; }
@@ -353,6 +361,52 @@
   .recap .piece:nth-child(2) h3 { color: var(--paper); }
   .recap .piece:nth-child(3) h3 { color: var(--mint); }
   .recap .piece p { font-size: .95em; color: #B9C7D3; max-width: 28ch; }
+
+  /* ---------- plain slide ---------- */
+
+  .slide.plain { grid-template-rows: minmax(0, 1fr); }
+  .slide.plain .body { justify-items: center; align-content: center; }
+  .slide.plain h1 { font-size: 9em; }
+
+  /* ---------- portrait ---------- */
+
+  .portrait {
+    width: 100%;
+    max-width: 22em;
+    aspect-ratio: 1;
+    justify-self: start;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: var(--ink-1);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .portrait .initials {
+    display: none;
+    font-family: var(--display);
+    font-weight: 900;
+    font-stretch: 118%;
+    font-size: 5em;
+    letter-spacing: -.03em;
+    color: var(--line);
+  }
+  .portrait.is-missing img { display: none; }
+  .portrait.is-missing .initials { display: block; }
+
+  .body.bio {
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    gap: 4vw;
+  }
+  .body.bio .portrait { width: 20em; max-width: 100%; }
+  .body.bio .col { max-width: 46ch; }
+  .body.bio .row { grid-template-columns: 4.6em 1fr; }
+
+  .card .term { font-size: .68em; padding: .9em 1em; }
 
   .meta { display: grid; gap: .3em; }
   .who { font-family: var(--display); font-stretch: 108%; font-weight: 700; font-size: 1.3em; }
@@ -428,159 +482,298 @@
 
 <main class="deck">
 
-<!-- 1 ................................................................ title -->
-<section class="slide" data-title="Bots that do things">
+<!-- 1 ............................................................ title -->
+<section class="slide" data-title="Building an agentic Telegram bot">
   <header class="rail">
-    <span class="kicker">Laravel 13 &nbsp;·&nbsp; laravel/ai v0.10 &nbsp;·&nbsp; Telegram Bot API</span>
+    <span class="kicker">Bengaluru Tech Week &nbsp;·&nbsp; <b/>Laravel Bengaluru</b></span>
   </header>
   <div class="body split center">
     <div class="col">
-      <h1>Bots that<br>do things</h1>
-      <p class="lede">An agentic Telegram bot in Laravel. It decides, it calls tools, and it remembers who it is talking to.</p>
-      <div class="meta">
-        <span class="who">Jigar Dhulla</span>
-        <!-- EDIT ME: your repo / slides URL, also on the last slide -->
-        <span class="where"><span class="edit">github.com/…/telegram-ai-bot</span></span>
-      </div>
+      <h1>Building an<br>agentic<br>Telegram bot</h1>
+      <p class="lede">Chat as the interface to your Laravel app.</p>
     </div>
     <div class="chat" aria-label="A conversation with the bot: it sets a reminder, then sends it the next morning">
       <div class="bubble me" style="--i:0">Remind me to call the dentist tomorrow at 9</div>
       <div class="toolcall" style="--i:1"><b>CreateReminder</b> { "remind_at": "2026-08-31 09:00" }</div>
-      <div class="toolcall" style="--i:2">&rarr; Reminder #1 set for Mon 31 Aug 2026, 09:00.</div>
-      <div class="bubble bot" style="--i:3">Done, I'll nudge you Monday at 09:00.</div>
-      <div class="aside" style="--i:4">the next morning</div>
-      <div class="bubble bot" style="--i:5">⏰ Call the dentist</div>
+      <div class="bubble bot" style="--i:2">Done, I'll nudge you Monday at 09:00.</div>
+      <div class="aside" style="--i:3">the next morning</div>
+      <div class="bubble bot" style="--i:4">⏰ Call the dentist</div>
     </div>
   </div>
 </section>
 
-<!-- 2 ................................................................ ch 01 -->
-<section class="slide chapter" data-title="Chapter 01 — The hook">
-  <header class="rail">
-    <span class="kicker">01 <b>The hook</b></span>
-    <!-- rehearsal: 2–3 min -->
-  </header>
-  <div class="body">
-    <div class="col">
-      <span class="num">01</span>
-      <h2>Show it first,<br>explain it after.</h2>
-      <p class="clock">Demo · then the one distinction that matters</p>
-    </div>
+<!-- 2 ............................................................. demo -->
+<section class="slide plain" data-title="Demo">
+  <div class="body center">
+    <h1>Demo</h1>
   </div>
 </section>
 
-<!-- 3 ................................................................. demo -->
-<section class="slide" data-title="Watch it work">
+<!-- 3 ........................................................ use cases -->
+<section class="slide" data-title="Where chat beats a screen">
   <header class="rail">
-    <span class="kicker">01 <b>The hook</b></span>
-    <span class="timing">live demo</span>
+    <span class="kicker">Use cases</span>
   </header>
-  <div class="body center split">
+  <div class="body split center">
     <div class="col">
-      <h2>Watch it work</h2>
-      <p class="lede">Three messages, in a real Telegram chat, against a real model.</p>
+      <h2>Where chat beats a screen</h2>
       <ul class="beats">
-        <li data-n="01"><strong>“Remind me to call the dentist tomorrow at 9.”</strong><br><span>The model works out the date, the tool checks it, a row is written.</span></li>
-        <li data-n="02"><strong>“And remind me about the tax thing sometime next week.”</strong><br><span>“Sometime” is not a date. Watch it come back and ask which day.</span></li>
-        <li data-n="03"><strong>Then put the phone down.</strong><br><span>Tomorrow morning it messages first, with nobody in the chat.</span></li>
+        <li data-n="01"><span><strong>The CRUD nobody wants to build a UI for</strong></span></li>
+        <li data-n="02"><span><strong>People already in chat all day</strong> — ops, sales, support</span></li>
+        <li data-n="03"><span><strong>Anyone away from a desk</strong> — ask, log, approve, from a phone</span></li>
       </ul>
     </div>
-    <div class="frame is-missing">
-      <img src="demo.gif" alt="The bot setting a reminder and delivering it in Telegram">
-      <div class="missing">
-        <span class="kicker">if the wi-fi dies</span>
-        <p class="fine">Drop a <code>demo.gif</code> next to <code>slides.html</code> and it appears here instead of this box.</p>
-        <pre class="term"><span class="you">$</span> php artisan telegram:poll
-
-  <span class="ok">INFO</span>  Listening for messages.
-
-  Jigar <span class="dim">.......</span> Remember I need to buy milk
-  Jigar <span class="dim">.......</span> What am I supposed to remember?</pre>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 4 ...................................................... chatbot vs agent -->
-<section class="slide" data-title="Reply vs. act">
-  <header class="rail">
-    <span class="kicker">01 <b>The hook</b></span>
-    <span class="timing">the whole talk in one slide</span>
-  </header>
-  <div class="body center">
-    <h2>A chatbot replies. An agent decides.</h2>
-    <div class="versus">
-      <div class="side">
-        <h3>Chatbot</h3>
-        <pre class="term">you   <span class="dim">→</span> remind me to call the dentist
-        <span class="dim">tomorrow at 9</span>
-bot   <span class="dim">→</span> Sure, I'll remind you!</pre>
-        <p class="fine">Tomorrow at nine, nothing happens. It has no clock, no database, and no way to send you a message you did not ask for. It produced text that <em>sounds</em> like an action.</p>
-      </div>
-      <div class="side act">
-        <h3>Agent</h3>
-        <pre class="term">you   <span class="dim">→</span> remind me to call the dentist
-        <span class="dim">tomorrow at 9</span>
-model <span class="dim">→</span> <span class="ok">CreateReminder { remind_at: "2026-08-31 09:00" }</span>
-app   <span class="dim">→</span> validate, then insert into reminders …
-model <span class="dim">→</span> Done, I'll nudge you Monday at 09:00.
-<span class="dim">─── the next morning, 09:00 ───</span>
-bot   <span class="dim">→</span> <span class="ok">⏰ Call the dentist</span></pre>
-        <p class="fine">The model chose the tool and worked out the date. <em>Your</em> code checked it, stored it, and a scheduled command sent the message a day later — with no one in the chat.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 5 ................................................................ ch 02 -->
-<section class="slide chapter" data-title="Chapter 02 — The pieces">
-  <header class="rail">
-    <span class="kicker">02 <b>The pieces</b></span>
-    <!-- rehearsal: 5–6 min -->
-  </header>
-  <div class="body">
-    <div class="col">
-      <span class="num">02</span>
-      <h2>Three parts,<br>none of them magic.</h2>
-      <p class="clock">Laravel · the Bot API · laravel/ai</p>
-    </div>
-  </div>
-</section>
-
-<!-- 6 ......................................................... three pieces -->
-<section class="slide" data-title="The three pieces">
-  <header class="rail">
-    <span class="kicker">02 <b>The pieces</b></span>
-    <span class="timing">the three parts</span>
-  </header>
-  <div class="body center">
-    <h2>What you are actually stitching together</h2>
-    <div class="cards three">
+    <div class="cards two">
       <div class="card">
-        <span class="tag">the skeleton</span>
-        <h3>Laravel</h3>
-        <p>A route, a controller, a job, an Eloquent model. Nothing here is AI-specific, and that is the point: the interesting part is ordinary web plumbing.</p>
+        <span class="tag">crm</span>
+        <h3>Log that call</h3>
+        <p>Move the deal, chase the invoice, ask who has gone quiet.</p>
       </div>
       <div class="card">
-        <span class="tag">the mouth and ears</span>
-        <h3>Telegram Bot API</h3>
-        <p>A JSON HTTP API. Updates arrive by webhook or long polling; replies go out with <code>sendMessage</code>. Reach for a package like <code>telegram-bot-sdk</code>, or write the five endpoints you need yourself.</p>
+        <span class="tag">cms</span>
+        <h3>Fix the typo</h3>
+        <p>Unpublish a post, schedule the newsletter, swap an image.</p>
+      </div>
+      <div class="card">
+        <span class="tag">internal tools</span>
+        <h3>Any CRUD</h3>
+        <p>Your models, validation and policies already exist.</p>
       </div>
       <div class="card accent">
-        <span class="tag">the brain</span>
-        <h3>laravel/ai</h3>
-        <p>Laravel's first-party AI SDK. Agents, tools, conversation memory, structured output, streaming and provider failover, behind one API across a dozen providers.</p>
+        <span class="tag">and further</span>
+        <h3>Real workflows</h3>
+        <p>Approvals, reports, anything needing a human yes.</p>
       </div>
     </div>
-    <p class="fine">This repo takes the hand-rolled option: <code>app/Services/Telegram.php</code> is 126 lines of <code>Http::post()</code> covering <code>sendMessage</code>, <code>sendChatAction</code>, <code>getUpdates</code>, <code>setWebhook</code> and <code>deleteWebhook</code>. That is the entire surface a bot needs.</p>
   </div>
 </section>
 
-<!-- 7 ......................................................... architecture -->
-<section class="slide" data-title="How a message flows">
+<!-- 4 ......................................................... about me -->
+<section class="slide" data-title="Jigar Dhulla">
   <header class="rail">
-    <span class="kicker">02 <b>The pieces</b></span>
-    <span class="timing">the map for the rest of the talk</span>
+    <span class="kicker">About</span>
+  </header>
+  <div class="body bio">
+    <div class="portrait is-missing">
+      <img src="avatar.jpg" alt="Jigar Dhulla">
+      <span class="initials">JD</span>
+    </div>
+    <div class="col">
+      <h2>Jigar Dhulla</h2>
+      <p class="lede">PHP Evangelist.</p>
+      <div class="rows">
+        <div class="row"><b>work</b><span>Engineering Manager @ Densou</span></div>
+        <div class="row"><b>into</b><span>Laravel, PHP, Docker, AWS, AdTech, Digital Marketing, Open Source</span></div>
+        <div class="row"><b>twitter</b><span>@jigar_dhulla</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 ................................................... setup: laravel -->
+<section class="slide" data-title="Setup — Laravel">
+  <header class="rail">
+    <span class="kicker">Setup &nbsp;·&nbsp; <b>Laravel</b></span>
+    <span class="timing">migrations</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Two tables of your own</h2>
+      <pre class="term"><span class="you">$</span> composer install
+<span class="you">$</span> php artisan migrate</pre>
+      <div class="rows">
+        <div class="row"><b>chat</b><span>one row per person, keyed on their Telegram id</span></div>
+        <div class="row"><b>data</b><span>your real domain — the agent only reaches it through tools</span></div>
+        <div class="row"><b>index</b><span>the scheduler asks "what is due?" every minute</span></div>
+      </div>
+      <p class="fine">A third pair of tables arrives with the SDK: <code>agent_conversations</code> and its messages.</p>
+    </div>
+    <pre class="code"><span class="path">database/migrations/</span><span class="ln"><span class="t">Schema</span>::create(<span class="s">'telegram_chats'</span>, <span class="k">function</span> (<span class="t">Blueprint</span> $table) {</span>
+<span class="ln">    $table-&gt;id();</span>
+<span class="ln hl">    $table-&gt;unsignedBigInteger(<span class="s">'telegram_id'</span>)-&gt;unique();       <span class="c">// who</span></span>
+<span class="ln">    $table-&gt;string(<span class="s">'name'</span>)-&gt;nullable();</span>
+<span class="ln hl">    $table-&gt;string(<span class="s">'conversation_id'</span>, <span class="n">36</span>)-&gt;nullable();       <span class="c">// memory</span></span>
+<span class="ln">    $table-&gt;timestamps();</span>
+<span class="ln">});</span>
+<span class="ln"> </span>
+<span class="ln"><span class="t">Schema</span>::create(<span class="s">'reminders'</span>, <span class="k">function</span> (<span class="t">Blueprint</span> $table) {</span>
+<span class="ln">    $table-&gt;id();</span>
+<span class="ln">    $table-&gt;foreignId(<span class="s">'telegram_chat_id'</span>)-&gt;constrained()-&gt;cascadeOnDelete();</span>
+<span class="ln">    $table-&gt;string(<span class="s">'body'</span>);</span>
+<span class="ln">    $table-&gt;dateTime(<span class="s">'remind_at'</span>);</span>
+<span class="ln hl">    $table-&gt;dateTime(<span class="s">'delivered_at'</span>)-&gt;nullable();          <span class="c">// sent yet?</span></span>
+<span class="ln">    $table-&gt;timestamps();</span>
+<span class="ln"> </span>
+<span class="ln">    $table-&gt;index([<span class="s">'delivered_at'</span>, <span class="s">'remind_at'</span>]);</span>
+<span class="ln">});</span></pre>
+  </div>
+</section>
+
+<!-- 6 .................................................... setup: models -->
+<section class="slide" data-title="Setup — Models">
+  <header class="rail">
+    <span class="kicker">Setup &nbsp;·&nbsp; <b>Laravel</b></span>
+    <span class="timing">models</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Two models, one relationship that matters</h2>
+      <div class="rows">
+        <div class="row"><b>link</b><span>a tool reaches rows as <code>$chat-&gt;reminders()</code>, never <code>Reminder::</code></span></div>
+        <div class="row"><b>scope</b><span>the query lives in the model, so the tool stays one line</span></div>
+        <div class="row"><b>casts</b><span>dates come back as objects, ready to format in a reply</span></div>
+      </div>
+      <p class="fine">No policy class here — the relationship <em>is</em> the authorisation. Scoped this way, the model was never given a way to name another chat's row.</p>
+    </div>
+    <pre class="code tall"><span class="path">app/Models/TelegramChat.php &nbsp;·&nbsp; app/Models/Reminder.php</span><span class="ln"><span class="k">class</span> <span class="t">TelegramChat</span> <span class="k">extends</span> <span class="t">Model</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">protected</span> $fillable = [<span class="s">'telegram_id'</span>, <span class="s">'name'</span>, <span class="s">'conversation_id'</span>];</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> reminders(): <span class="t">HasMany</span>          <span class="c">// every tool goes through here</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> $this-&gt;hasMany(<span class="t">Reminder</span>::<span class="k">class</span>);</span>
+<span class="ln">    }</span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">class</span> <span class="t">Reminder</span> <span class="k">extends</span> <span class="t">Model</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">protected</span> $fillable = [<span class="s">'body'</span>, <span class="s">'remind_at'</span>, <span class="s">'delivered_at'</span>];</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> scopeDue(<span class="t">Builder</span> $query): <span class="k">void</span>       <span class="c">// the scheduler</span></span>
+<span class="ln">    {</span>
+<span class="ln">        $query-&gt;whereNull(<span class="s">'delivered_at'</span>)-&gt;where(<span class="s">'remind_at'</span>, <span class="s">'&lt;='</span>, now());</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> scopePending(<span class="t">Builder</span> $query): <span class="k">void</span>   <span class="c">// the tools</span></span>
+<span class="ln">    {</span>
+<span class="ln">        $query-&gt;whereNull(<span class="s">'delivered_at'</span>);</span>
+<span class="ln">    }</span>
+<span class="ln">    <span class="k">protected function</span> casts(): <span class="k">array</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [<span class="s">'remind_at'</span> =&gt; <span class="s">'immutable_datetime'</span>];  <span class="c">// a real object</span></span>
+<span class="ln">    }</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 7 ................................................. setup: botfather -->
+<section class="slide" data-title="Setup — @BotFather">
+  <header class="rail">
+    <span class="kicker">Setup &nbsp;·&nbsp; <b>Telegram</b></span>
+    <span class="timing">@BotFather</span>
+  </header>
+  <div class="body split center">
+    <div class="col">
+      <h2>Your bot is made by another bot</h2>
+      <div class="rows">
+        <div class="row"><b>create</b><span><code>/newbot</code>, a name, then a @username ending in <code>bot</code></span></div>
+        <div class="row"><b>token</b><span>the API key comes straight back in the chat</span></div>
+        <div class="row"><b>tweak</b><span><code>/setcommands</code>, <code>/setdescription</code>, <code>/revoke</code></span></div>
+      </div>
+      <p class="fine">That token is the entire authentication story for the Bot API — anyone holding it <em>is</em> your bot. Into <code>.env</code>, never into a repo.</p>
+    </div>
+    <div class="chat" aria-label="A conversation with @BotFather: the /newbot command, a name, a username, and the API token it returns">
+      <div class="bubble me" style="--i:0">/newbot</div>
+      <div class="bubble bot" style="--i:1">Alright. How are we going to call it?</div>
+      <div class="bubble me" style="--i:2">Reminder Bot</div>
+      <div class="bubble bot" style="--i:3">Now choose a username. It must end in <b>bot</b>.</div>
+      <div class="bubble me" style="--i:4">jd_reminder_bot</div>
+      <div class="bubble bot" style="--i:5">Done! Use this token to access the HTTP API:</div>
+      <div class="toolcall" style="--i:6">8123456789:AAE<span class="dim">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 .................................................. setup: telegram -->
+<section class="slide" data-title="Setup — Telegram">
+  <header class="rail">
+    <span class="kicker">Setup &nbsp;·&nbsp; <b>Telegram</b></span>
+    <span class="timing">the service layer</span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Four endpoints is the whole Bot API</h2>
+      <pre class="term">sendMessage      <span class="dim">the reply</span>
+sendChatAction   <span class="dim">the typing dots</span>
+setWebhook       <span class="dim">point Telegram at your URL</span>
+deleteWebhook    <span class="dim">stop it</span></pre>
+      <div class="rows">
+        <div class="row"><b>setup</b><span><code>php artisan telegram:webhook &lt;url&gt;</code></span></div>
+        <div class="row"><b>secret</b><span>it prints a <code>TELEGRAM_WEBHOOK_SECRET=</code> line to copy</span></div>
+      </div>
+      <p class="fine">The token sits in the URL of every call, so scrub it before anything reaches a log.</p>
+    </div>
+    <pre class="code"><span class="path">app/Services/Telegram.php</span><span class="ln"><span class="k">public function</span> sendTyping(<span class="k">int</span> $chatId): <span class="k">void</span></span>
+<span class="ln">{</span>
+<span class="ln">    $this-&gt;call(<span class="s">'sendChatAction'</span>, [<span class="s">'chat_id'</span> =&gt; $chatId, <span class="s">'action'</span> =&gt; <span class="s">'typing'</span>]);</span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">private function</span> call(<span class="k">string</span> $method, <span class="k">array</span> $payload = []): <span class="k">mixed</span></span>
+<span class="ln">{</span>
+<span class="ln hl">    $response = <span class="t">Http</span>::asJson()-&gt;connectTimeout(<span class="n">10</span>)-&gt;timeout(<span class="n">60</span>)-&gt;post(</span>
+<span class="ln hl">        <span class="s">"https://api.telegram.org/bot{$this-&gt;token}/{$method}"</span>, $payload,</span>
+<span class="ln hl">    );</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">if</span> (! $response-&gt;successful() || $response-&gt;json(<span class="s">'ok'</span>) !== <span class="k">true</span>) {</span>
+<span class="ln">        <span class="k">throw new</span> <span class="t">RuntimeException</span>(</span>
+<span class="ln">            <span class="s">"Telegram [{$method}] failed: "</span>.$this-&gt;scrub($response-&gt;body()),</span>
+<span class="ln">        );</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">return</span> $response-&gt;json(<span class="s">'result'</span>);</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 9 ................................................ setup: laravel/ai -->
+<section class="slide" data-title="Setup — laravel/ai">
+  <header class="rail">
+    <span class="kicker">Setup &nbsp;·&nbsp; <b>laravel/ai</b></span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>Four contracts and two traits</h2>
+      <pre class="term"><span class="you">$</span> composer require laravel/ai
+<span class="you">$</span> php artisan vendor:publish \
+      --provider=<span class="s">"Laravel\Ai\AiServiceProvider"</span>
+<span class="you">$</span> php artisan migrate
+
+<span class="you">$</span> php artisan make:agent TelegramAssistant
+<span class="you">$</span> php artisan make:tool CreateReminder</pre>
+      <div class="rows">
+        <div class="row"><b>traits</b><span><code>Promptable</code>, <code>RemembersConversations</code> do the work</span></div>
+        <div class="row"><b>config</b><span><code>config/ai.php</code> — provider, failover, models</span></div>
+      </div>
+    </div>
+    <pre class="code"><span class="path">Laravel\Ai\Contracts</span><span class="ln"><span class="k">interface</span> <span class="t">Agent</span></span>
+<span class="ln">{</span>
+<span class="ln hl">    <span class="k">public function</span> instructions(): <span class="t">Stringable</span>|<span class="k">string</span>;   <span class="c">// how to behave</span></span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">interface</span> <span class="t">HasTools</span></span>
+<span class="ln">{</span>
+<span class="ln hl">    <span class="k">public function</span> tools(): <span class="k">iterable</span>;                    <span class="c">// what it may do</span></span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">interface</span> <span class="t">Tool</span></span>
+<span class="ln">{</span>
+<span class="ln hl">    <span class="k">public function</span> description(): <span class="t">Stringable</span>|<span class="k">string</span>;    <span class="c">// when to use me</span></span>
+<span class="ln hl">    <span class="k">public function</span> schema(<span class="t">JsonSchema</span> $schema): <span class="k">array</span>;    <span class="c">// my arguments</span></span>
+<span class="ln hl">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span>;</span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">interface</span> <span class="t">Conversational</span></span>
+<span class="ln">{</span>
+<span class="ln hl">    <span class="k">public function</span> messages(): <span class="k">iterable</span>;                 <span class="c">// the history</span></span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 10 ............................................................ flow -->
+<section class="slide" data-title="How it works">
+  <header class="rail">
+    <span class="kicker">How it works</span>
+    <span class="timing">webhook &rarr; job &rarr; agent &rarr; reply</span>
   </header>
   <div class="body">
     <figure>
@@ -612,7 +805,7 @@ bot   <span class="dim">→</span> <span class="ok">⏰ Call the dentist</span><
 
         <rect class="d-box" x="798" y="64" width="176" height="80" rx="10"></rect>
         <text class="d-title" x="886" y="98" text-anchor="middle">TelegramBot</text>
-        <text class="d-sub" x="886" y="120" text-anchor="middle">update → reply</text>
+        <text class="d-sub" x="886" y="120" text-anchor="middle">update &rarr; reply</text>
 
         <line class="d-flow" x1="174" y1="104" x2="252" y2="104" marker-end="url(#ar-flow)"></line>
         <text class="d-label" x="213" y="92" text-anchor="middle">update</text>
@@ -636,7 +829,6 @@ bot   <span class="dim">→</span> <span class="ok">⏰ Call the dentist</span><
         <text class="d-title" x="486" y="348" text-anchor="middle">Your tools</text>
         <text class="d-sub" x="486" y="370" text-anchor="middle">create · list · cancel</text>
 
-
         <rect class="d-box-lit" x="748" y="316" width="292" height="76" rx="10"></rect>
         <text class="d-title" x="894" y="348" text-anchor="middle">The provider</text>
         <text class="d-sub" x="894" y="370" text-anchor="middle">Gemini, OpenAI, Anthropic, …</text>
@@ -651,229 +843,33 @@ bot   <span class="dim">→</span> <span class="ok">⏰ Call the dentist</span><
         <path class="d-back" d="M300 356 L120 356 L120 150" marker-end="url(#ar-back)"></path>
         <text class="d-label" x="132" y="266" text-anchor="start">reply · sendMessage</text>
       </svg>
-      <figcaption>Everything after the route runs outside the HTTP request. Reminders take a second way out that is not drawn here: a scheduled command, sending to Telegram with no update to answer.</figcaption>
+      <figcaption>Everything after the route runs outside the request. Reminders take a second way out: a scheduled command, with no update to answer.</figcaption>
     </figure>
   </div>
 </section>
 
-<!-- 8 ................................................................ ch 03 -->
-<section class="slide chapter" data-title="Chapter 03 — What “agentic” means">
+<!-- 11 ................................................... code: webhook -->
+<section class="slide" data-title="The webhook">
   <header class="rail">
-    <span class="kicker">03 <b>What “agentic” means</b></span>
-    <!-- rehearsal: 4–5 min -->
-  </header>
-  <div class="body">
-    <div class="col">
-      <span class="num">03</span>
-      <h2>An agent is four<br>things in a class.</h2>
-      <p class="clock">Instructions · tools · memory · (optionally) a schema</p>
-    </div>
-  </div>
-</section>
-
-<!-- 9 ....................................................... agent anatomy -->
-<section class="slide" data-title="Anatomy of an agent">
-  <header class="rail">
-    <span class="kicker">03 <b>What “agentic” means</b></span>
-    <span class="timing">the whole contract</span>
+    <span class="kicker">Code &nbsp;·&nbsp; <b>webhook</b></span>
   </header>
   <div class="body split wide-code">
     <div class="col">
-      <h2>Anatomy of an agent</h2>
+      <h2>The webhook does almost nothing</h2>
       <div class="rows">
-        <div class="row"><b>01</b><span><code>instructions()</code> — who it is and how to behave</span></div>
-        <div class="row"><b>02</b><span><code>tools()</code> — what it is allowed to do</span></div>
-        <div class="row"><b>03</b><span><code>RemembersConversations</code> — what it recalls</span></div>
-        <div class="row"><b>04</b><span><code>schema()</code> — optional: answer as typed JSON, not prose. This bot doesn't need it; its tools carry the schemas</span></div>
+        <div class="row"><b>verify</b><span>a secret header, or 403</span></div>
+        <div class="row"><b>queue</b><span>the model call is not in this request</span></div>
+        <div class="row"><b>204</b><span>an empty body is the correct reply</span></div>
       </div>
-      <p class="fine">Everything else is a trait. <code>Promptable</code> gives you <code>prompt()</code>, <code>stream()</code> and <code>queue()</code>; the interfaces are how the SDK knows which of them apply.</p>
-      <p class="fine">Instructions are built per call, so anything the model cannot know — the clock, most of all — goes in here rather than in the prompt.</p>
     </div>
-    <pre class="code tall"><span class="path">app/Ai/Agents/TelegramAssistant.php</span><span class="ln"><span class="k">class</span> <span class="t">TelegramAssistant</span> <span class="k">implements</span> <span class="t">Agent</span>, <span class="t">Conversational</span>, <span class="t">HasTools</span></span>
-<span class="ln">{</span>
-<span class="ln">    <span class="k">use</span> <span class="t">Promptable</span>, <span class="t">RemembersConversations</span>;</span>
+    <pre class="code"><span class="path">routes/web.php &nbsp;·&nbsp; TelegramWebhookController.php</span><span class="ln"><span class="t">Route</span>::post(<span class="s">'/telegram/webhook'</span>, <span class="t">TelegramWebhookController</span>::<span class="k">class</span>);</span>
 <span class="ln"> </span>
-<span class="ln">    <span class="k">public function</span> instructions(): <span class="t">Stringable</span>|<span class="k">string</span></span>
-<span class="ln">    {</span>
-<span class="ln hl">        $now = now();</span>
-<span class="ln"> </span>
-<span class="ln">        <span class="k">return</span> <span class="s">&lt;&lt;&lt;INSTRUCTIONS</span></span>
-<span class="ln">        <span class="s">You are a helpful assistant living inside a Telegram chat.</span></span>
-<span class="ln">        <span class="s">Keep replies short, the way a person texts.</span></span>
-<span class="ln"> </span>
-<span class="ln">        <span class="s">You set reminders, list what is coming up, and cancel the</span></span>
-<span class="ln">        <span class="s">ones they change their mind about.</span></span>
-<span class="ln"> </span>
-<span class="ln hl">        <span class="s">It is {$now-&gt;format('l j F Y, H:i')}. Work reminder times out</span></span>
-<span class="ln hl">        <span class="s">against that clock and pass them to CreateReminder as</span></span>
-<span class="ln hl">        <span class="s">YYYY-MM-DD HH:MM.</span></span>
-<span class="ln">        <span class="s">INSTRUCTIONS</span>;</span>
-<span class="ln">    }</span>
-<span class="ln">    <span class="k">public function</span> tools(): <span class="k">iterable</span></span>
-<span class="ln">    {</span>
-<span class="ln">        <span class="k">return</span> [<span class="k">new</span> <span class="t">CreateReminder</span>($this-&gt;chat), <span class="k">new</span> <span class="t">ListReminders</span>($this-&gt;chat), …];</span>
-<span class="ln">    }</span>
-<span class="ln">}</span></pre>
-  </div>
-</section>
-
-<!-- 10 ................................................................ tools -->
-<section class="slide" data-title="A tool is a PHP class">
-  <header class="rail">
-    <span class="kicker">03 <b>What “agentic” means</b></span>
-    <span class="timing">the interesting part</span>
-  </header>
-  <div class="body split">
-    <div class="col">
-      <h2>A tool is a PHP class the model is allowed to call</h2>
-      <p class="lede">Three methods. The SDK turns them into a function definition the provider understands.</p>
-      <div class="rows">
-        <div class="row"><b>name</b><span>the class basename, verbatim: <code>CreateReminder</code></span></div>
-        <div class="row"><b>desc</b><span><code>description()</code> — the only hint the model gets about when to use it</span></div>
-        <div class="row"><b>args</b><span><code>schema()</code> — a typed JSON schema it must fill in</span></div>
-        <div class="row"><b>run</b><span><code>handle()</code> — your code, your database, your rules</span></div>
-      </div>
-      <p class="fine">The model never touches your database. It asks for a tool by name with arguments; the SDK validates them, calls <code>handle()</code>, and feeds the returned string back into the conversation.</p>
-    </div>
-    <div class="stack">
-      <pre class="code"><span class="path">what the provider is sent</span><span class="ln">{</span>
-<span class="ln">  <span class="s">"name"</span>: <span class="s">"CreateReminder"</span>,</span>
-<span class="ln">  <span class="s">"description"</span>: <span class="s">"Set a reminder to be delivered to the user</span></span>
-<span class="ln">    <span class="s">later. Work the date out from the current time in your</span></span>
-<span class="ln">    <span class="s">instructions and pass it as YYYY-MM-DD HH:MM."</span>,</span>
-<span class="ln">  <span class="s">"parameters"</span>: {</span>
-<span class="ln">    <span class="s">"type"</span>: <span class="s">"object"</span>,</span>
-<span class="ln">    <span class="s">"properties"</span>: { <span class="s">"body"</span>: { … }, <span class="s">"remind_at"</span>: { … } },</span>
-<span class="ln">    <span class="s">"required"</span>: [<span class="s">"body"</span>, <span class="s">"remind_at"</span>]</span>
-<span class="ln">  }</span>
-<span class="ln">}</span></pre>
-      <pre class="term">turn 1  model  <span class="dim">→</span> <span class="ok">CreateReminder { remind_at: "2026-08-31 09:00" }</span>
-turn 1  app    <span class="dim">→</span> "Reminder #1 set for Mon 31 Aug 2026, 09:00."
-turn 2  model  <span class="dim">→</span> "Done, I'll nudge you Monday at 09:00."</pre>
-      <p class="fine">One user message, two round trips to the provider. <code>MaxSteps</code> caps how many times that loop may run.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 11 ......................................................... no clock -->
-<section class="slide" data-title="Checking the model's date">
-  <header class="rail">
-    <span class="kicker">03 <b>What &ldquo;agentic&rdquo; means</b></span>
-    <span class="timing">trust, then verify</span>
-  </header>
-  <div class="body split">
-    <div class="col">
-      <h2>The model has no clock. Give it one, then check its work.</h2>
-      <p class="lede">“Tomorrow at 9” is arithmetic against a date the model does not have. Hand it the date, name the format you want back, and validate what arrives.</p>
-      <div class="rows">
-        <div class="row"><b>now</b><span>the current moment goes into the instructions on every call</span></div>
-        <div class="row"><b>shape</b><span>the tool's schema names the exact format it wants</span></div>
-        <div class="row"><b>bail</b><span>stop at the first broken rule, before anything is written</span></div>
-        <div class="row"><b>ask</b><span>the failure message is the next thing the model reads</span></div>
-      </div>
-      <p class="fine">This is the whole trick: a validation message is not a log line, it is a prompt. Write it as an instruction to the model and a bad argument turns into a better question for the user.</p>
-    </div>
-    <div class="stack">
-      <pre class="code"><span class="path">app/Ai/Tools/CreateReminder.php</span><span class="ln">$validator = <span class="t">Validator</span>::make($request-&gt;all(), [</span>
-<span class="ln">    <span class="s">'body'</span> =&gt; [<span class="s">'required'</span>, <span class="s">'string'</span>, <span class="s">'max:255'</span>],</span>
-<span class="ln hl">    <span class="s">'remind_at'</span> =&gt; [<span class="s">'bail'</span>, <span class="s">'required'</span>,</span>
-<span class="ln hl">        <span class="s">'date_format:'</span>.self::FORMATS, <span class="s">'after:now'</span>],</span>
-<span class="ln">], [</span>
-<span class="ln hl">    <span class="s">'remind_at.date_format'</span> =&gt; <span class="s">'That is not a date I can read. Ask'</span></span>
-<span class="ln hl">        .<span class="s">' the user for a specific day and time, then pass it as'</span></span>
-<span class="ln hl">        .<span class="s">' YYYY-MM-DD HH:MM.'</span>,</span>
-<span class="ln">]);</span>
-<span class="ln"> </span>
-<span class="ln"><span class="k">if</span> ($validator-&gt;fails()) {</span>
-<span class="ln">    <span class="k">return</span> $validator-&gt;errors()-&gt;first();</span>
-<span class="ln">}</span></pre>
-      <pre class="term">model <span class="dim">→</span> CreateReminder { remind_at: <span class="you">"sometime next week"</span> }
-app   <span class="dim">→</span> <span class="ok">That is not a date I can read. Ask the</span>
-        <span class="ok">user for a specific day and time …</span>
-model <span class="dim">→</span> Happy to set that — which day next week,
-        and what time?</pre>
-    </div>
-  </div>
-</section>
-
-<!-- 12 ............................................................... memory -->
-<section class="slide" data-title="Why it remembers you">
-  <header class="rail">
-    <span class="kicker">03 <b>What “agentic” means</b></span>
-    <span class="timing">persistence</span>
-  </header>
-  <div class="body split wide-code">
-    <div class="col">
-      <h2>Why it remembers you between messages</h2>
-      <p class="lede">HTTP forgets everything. A conversation cannot.</p>
-      <div class="rows">
-        <div class="row"><b>trait</b><span><code>RemembersConversations</code> persists every message for you</span></div>
-        <div class="row"><b>row</b><span>one <code>conversation_id</code> stored on the chat</span></div>
-        <div class="row"><b>who</b><span><code>as:</code> and <code>forParticipant()</code> scope it to that chat</span></div>
-        <div class="row"><b>wipe</b><span><code>/forget</code> nulls the column — instant fresh start</span></div>
-      </div>
-      <p class="fine">Two migrations from the SDK do the storing: <code>agent_conversations</code> and <code>agent_conversation_messages</code>. Reminders live in your own table instead, because a reminder has to outlive the conversation that set it.</p>
-    </div>
-    <pre class="code"><span class="path">app/Services/TelegramBot.php</span><span class="ln"><span class="k">if</span> ($text === <span class="s">'/forget'</span>) {</span>
-<span class="ln">    $chat-&gt;update([<span class="s">'conversation_id'</span> =&gt; <span class="k">null</span>]);</span>
-<span class="ln"> </span>
-<span class="ln">    <span class="k">return</span> <span class="s">'Done, I have forgotten our conversation.'</span>;</span>
-<span class="ln">}</span>
-<span class="ln"> </span>
-<span class="ln">$agent = <span class="k">new</span> <span class="t">TelegramAssistant</span>($chat);</span>
-<span class="ln"> </span>
-<span class="ln hl">$response = ($chat-&gt;conversation_id</span>
-<span class="ln hl">    ? $agent-&gt;continue($chat-&gt;conversation_id, as: $chat)</span>
-<span class="ln hl">    : $agent-&gt;forParticipant($chat))-&gt;prompt($text);</span>
-<span class="ln"> </span>
-<span class="ln">$chat-&gt;update([<span class="s">'conversation_id'</span> =&gt; $response-&gt;conversationId]);</span>
-<span class="ln"> </span>
-<span class="ln"><span class="k">return</span> $response-&gt;text;</span></pre>
-  </div>
-</section>
-
-<!-- 12 ............................................................... ch 04 -->
-<section class="slide chapter" data-title="Chapter 04 — The code">
-  <header class="rail">
-    <span class="kicker">04 <b>The code</b></span>
-    <!-- rehearsal: 10–12 min -->
-  </header>
-  <div class="body">
-    <div class="col">
-      <span class="num">04</span>
-      <h2>One message,<br>four steps.</h2>
-      <p class="clock">In · hand off · act · out &nbsp;·&nbsp; ~800 lines</p>
-    </div>
-  </div>
-</section>
-
-<!-- 13 ....................................................... step 1: in -->
-<section class="slide" data-title="Step 1 — the update arrives">
-  <header class="rail">
-    <span class="kicker">04 <b>The code</b></span>
-    <span class="timing">step 1 of 4 &nbsp;·&nbsp; in</span>
-  </header>
-  <div class="body split wide-code">
-    <div class="col">
-      <h2>Step 1 — Telegram posts to a route</h2>
-      <p class="lede">One public POST route. Verify, hand off, answer with nothing.</p>
-      <div class="rows">
-        <div class="row"><b>auth</b><span>Telegram signs every request with a header you chose</span></div>
-        <div class="row"><b>fast</b><span>the job means the model call is not in this request</span></div>
-        <div class="row"><b>204</b><span>an empty body is a complete, correct reply here</span></div>
-      </div>
-      <p class="fine">This route is on the public internet with no session and no CSRF token. The secret header is the whole door.</p>
-    </div>
-    <pre class="code"><span class="path">routes/web.php</span><span class="ln"><span class="t">Route</span>::post(<span class="s">'/telegram/webhook'</span>, <span class="t">TelegramWebhookController</span>::<span class="k">class</span>)</span>
-<span class="ln">    -&gt;name(<span class="s">'telegram.webhook'</span>);</span>
-<span class="ln"> </span>
-<span class="ln"><span class="c">// app/Http/Controllers/TelegramWebhookController.php</span></span>
 <span class="ln"><span class="k">public function</span> __invoke(<span class="t">Request</span> $request): <span class="t">Response</span></span>
 <span class="ln">{</span>
 <span class="ln">    $secret = (<span class="k">string</span>) config(<span class="s">'services.telegram.webhook_secret'</span>);</span>
 <span class="ln"> </span>
 <span class="ln">    abort_if(</span>
-<span class="ln">        $secret !== <span class="s">''</span> &amp;&amp; ! hash_equals($secret, (<span class="k">string</span>) $request-&gt;header(</span>
+<span class="ln">        $secret === <span class="s">''</span> || ! hash_equals($secret, (<span class="k">string</span>) $request-&gt;header(</span>
 <span class="ln">            <span class="s">'X-Telegram-Bot-Api-Secret-Token'</span></span>
 <span class="ln">        )),</span>
 <span class="ln">        <span class="n">403</span>,</span>
@@ -886,26 +882,26 @@ model <span class="dim">→</span> Happy to set that — which day next week,
   </div>
 </section>
 
-<!-- 14 ................................................ step 2: hand it over -->
-<section class="slide" data-title="Step 2 — hand it to the agent">
+<!-- 12 ................................................... code: service -->
+<section class="slide" data-title="The bot service">
   <header class="rail">
-    <span class="kicker">04 <b>The code</b></span>
-    <span class="timing">step 2 of 4 &nbsp;·&nbsp; hand off</span>
+    <span class="kicker">Code &nbsp;·&nbsp; <b>service</b></span>
   </header>
   <div class="body split wide-code">
     <div class="col">
-      <h2>Step 2 — the update becomes a prompt</h2>
-      <p class="lede">The only class that knows about both Telegram and the agent. Everything else stays ignorant of the other side.</p>
+      <h2>One class knows about both sides</h2>
       <div class="rows">
-        <div class="row"><b>skip</b><span>no text, no work — stickers and joins arrive here too</span></div>
-        <div class="row"><b>who</b><span><code>firstOrCreate</code> on the Telegram chat id</span></div>
-        <div class="row"><b>feel</b><span>fire the typing indicator before the slow part</span></div>
+        <div class="row"><b>chat</b><span><code>firstOrCreate</code> on the Telegram id</span></div>
+        <div class="row"><b>guard</b><span>an update carrying no text is never answered</span></div>
+        <div class="row"><b>table</b><span>every command the bot knows, in one <code>match</code></span></div>
       </div>
-      <p class="fine">Commands like <code>/start</code> and <code>/forget</code> are answered from PHP, with no model call at all. Not every message deserves a token bill.</p>
+      <p class="fine">Two commands, two arms. The moment one of them takes an argument &mdash; <code>/remind …</code> &mdash; is the moment to parse before dispatching. <em>Not before</em>.</p>
     </div>
-    <pre class="code"><span class="path">app/Services/TelegramBot.php</span><span class="ln"><span class="k">public function</span> handle(<span class="k">array</span> $update): <span class="k">void</span></span>
+    <pre class="code tall"><span class="path">app/Services/TelegramBot.php</span><span class="ln"><span class="k">private const</span> WELCOME = <span class="s">'Hi! I am a reminder bot …'</span>;</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">public function</span> handle(<span class="k">array</span> $update): <span class="k">void</span></span>
 <span class="ln">{</span>
-<span class="ln">    $message = $update[<span class="s">'message'</span>] ?? <span class="k">null</span>;</span>
+<span class="ln hl">    $message = $update[<span class="s">'message'</span>] ?? [];</span>
 <span class="ln">    $text = trim((<span class="k">string</span>) ($message[<span class="s">'text'</span>] ?? <span class="s">''</span>));</span>
 <span class="ln"> </span>
 <span class="ln">    <span class="k">if</span> ($text === <span class="s">''</span>) {</span>
@@ -914,400 +910,407 @@ model <span class="dim">→</span> Happy to set that — which day next week,
 <span class="ln"> </span>
 <span class="ln">    $chat = $this-&gt;chatFor($message);</span>
 <span class="ln"> </span>
-<span class="ln hl">    $this-&gt;telegram-&gt;sendTyping($chat-&gt;telegram_id);</span>
 <span class="ln hl">    $this-&gt;telegram-&gt;sendMessage($chat-&gt;telegram_id, $this-&gt;reply($chat, $text));</span>
 <span class="ln">}</span>
 <span class="ln"> </span>
-<span class="ln"><span class="k">private function</span> chatFor(<span class="k">array</span> $message): <span class="t">TelegramChat</span></span>
+<span class="ln"><span class="k">private function</span> reply(<span class="t">TelegramChat</span> $chat, <span class="k">string</span> $text): <span class="k">string</span></span>
 <span class="ln">{</span>
-<span class="ln">    <span class="k">return</span> <span class="t">TelegramChat</span>::firstOrCreate(</span>
-<span class="ln">        [<span class="s">'telegram_id'</span> =&gt; $message[<span class="s">'chat'</span>][<span class="s">'id'</span>]],</span>
-<span class="ln">        [<span class="s">'name'</span> =&gt; $message[<span class="s">'chat'</span>][<span class="s">'first_name'</span>] ?? <span class="k">null</span>],</span>
-<span class="ln">    );</span>
+<span class="ln hl">    <span class="k">return match</span> ($text) {</span>
+<span class="ln hl">        <span class="s">'/start'</span> =&gt; <span class="k">self</span>::WELCOME,</span>
+<span class="ln hl">        <span class="s">'/forget'</span> =&gt; $this-&gt;forget($chat),</span>
+<span class="ln hl">        <span class="k">default</span> =&gt; $this-&gt;ask($chat, $text),</span>
+<span class="ln hl">    };</span>
 <span class="ln">}</span></pre>
   </div>
 </section>
 
-<!-- 15 ......................................................... step 3: tool -->
-<section class="slide" data-title="Step 3 — the tool it calls">
+<!-- 13 ............................................. code: the default arm -->
+<section class="slide" data-title="Continue, or start">
   <header class="rail">
-    <span class="kicker">04 <b>The code</b></span>
-    <span class="timing">step 3 of 4 &nbsp;·&nbsp; act</span>
+    <span class="kicker">Code &nbsp;·&nbsp; <b>service</b></span>
+    <span class="timing">the default arm</span>
   </header>
   <div class="body split wide-code">
     <div class="col">
-      <h2>Step 3 — the tool, in full</h2>
-      <p class="lede">48 lines. Three methods, and one of them is a sentence.</p>
+      <h2>Continue the conversation, or start one</h2>
       <div class="rows">
-        <div class="row"><b>scope</b><span>the chat is injected, so a tool can only touch that chat's rows</span></div>
-        <div class="row"><b>args</b><span><code>$request-&gt;integer('id')</code> — shaped by the schema you declared</span></div>
-        <div class="row"><b>back</b><span>return a string; the model reads it and writes the reply</span></div>
+        <div class="row"><b>typing</b><span>the dots cover a model call, so they go out here</span></div>
+        <div class="row"><b>agent</b><span>continue on the stored id, or open a conversation</span></div>
+        <div class="row"><b>memory</b><span>store the returned <code>conversationId</code></span></div>
       </div>
-      <p class="fine">Scoping in the constructor rather than in a tool argument matters. <code>whereKey($id)</code> runs inside <code>$this-&gt;chat-&gt;reminders()</code>, so the model cannot reach another chat's rows — it was never given a way to name one.</p>
+      <p class="fine">That column is what makes <code>/forget</code> possible. The SDK will happily remember a conversation, but it offers nothing to forget one &mdash; so the boundary has to live on <em>our</em> side of the line.</p>
     </div>
-    <pre class="code tall"><span class="path">app/Ai/Tools/CancelReminder.php</span><span class="ln"><span class="k">class</span> <span class="t">CancelReminder</span> <span class="k">implements</span> <span class="t">Tool</span></span>
+    <pre class="code tall"><span class="path">app/Services/TelegramBot.php</span><span class="ln"><span class="k">private function</span> forget(<span class="t">TelegramChat</span> $chat): <span class="k">string</span></span>
+<span class="ln">{</span>
+<span class="ln hl">    $chat-&gt;update([<span class="s">'conversation_id'</span> =&gt; <span class="k">null</span>]);</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">return</span> <span class="s">'Done, I have forgotten our conversation. …'</span>;</span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln"><span class="k">private function</span> ask(<span class="t">TelegramChat</span> $chat, <span class="k">string</span> $text): <span class="k">string</span></span>
+<span class="ln">{</span>
+<span class="ln hl">    $this-&gt;telegram-&gt;sendTyping($chat-&gt;telegram_id);   <span class="c">// the only slow arm</span></span>
+<span class="ln"> </span>
+<span class="ln">    $agent = <span class="k">new</span> <span class="t">TelegramAssistant</span>($chat);</span>
+<span class="ln"> </span>
+<span class="ln hl">    <span class="k">if</span> ($chat-&gt;conversation_id) {</span>
+<span class="ln hl">        $agent-&gt;continue($chat-&gt;conversation_id, as: $chat);</span>
+<span class="ln hl">    } <span class="k">else</span> {</span>
+<span class="ln hl">        $agent-&gt;forParticipant($chat);</span>
+<span class="ln hl">    }</span>
+<span class="ln"> </span>
+<span class="ln">    $response = $agent-&gt;prompt($text);</span>
+<span class="ln"> </span>
+<span class="ln">    $chat-&gt;update([<span class="s">'conversation_id'</span> =&gt; $response-&gt;conversationId]);</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">return</span> $response-&gt;text;</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 14 ..................................................... code: agent -->
+<section class="slide" data-title="The agent">
+  <header class="rail">
+    <span class="kicker">Code &nbsp;·&nbsp; <b>agent</b></span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>The agent is one class</h2>
+      <div class="rows">
+        <div class="row"><b>prompt</b><span>how to behave — and what time it is</span></div>
+        <div class="row"><b>tools</b><span>what it is allowed to do</span></div>
+        <div class="row"><b>memory</b><span>one trait, conversations persisted</span></div>
+        <div class="row"><b>models</b><span>a provider list, failed over in order</span></div>
+      </div>
+    </div>
+    <pre class="code tall"><span class="path">app/Ai/Agents/TelegramAssistant.php</span><span class="ln"><span class="k">class</span> <span class="t">TelegramAssistant</span> <span class="k">implements</span> <span class="t">Agent</span>, <span class="t">Conversational</span>, <span class="t">HasTools</span></span>
+<span class="ln">{</span>
+<span class="ln hl">    <span class="k">use</span> <span class="t">Promptable</span>, <span class="t">RemembersConversations</span>;</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly</span> <span class="t">TelegramChat</span> $chat) {}</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> instructions(): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> <span class="s">&lt;&lt;&lt;INSTRUCTIONS</span></span>
+<span class="ln">        <span class="s">You are a reminder bot living inside a Telegram chat.</span></span>
+<span class="ln">        <span class="s">Keep replies short, the way a person texts.</span></span>
+<span class="ln"> </span>
+<span class="ln hl">        <span class="s">It is {$now-&gt;format(<span class="s">'l j F Y, H:i'</span>)}. Work reminder times</span></span>
+<span class="ln hl">        <span class="s">out against that clock.</span></span>
+<span class="ln">        <span class="s">INSTRUCTIONS</span>;</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> provider(): <span class="k">array</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [config(<span class="s">'ai.default'</span>), ...config(<span class="s">'ai.failover'</span>)];</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> tools(): <span class="k">iterable</span></span>
+<span class="ln">    {</span>
+<span class="ln hl">        <span class="k">return</span> [<span class="k">new</span> <span class="t">CreateReminder</span>($this-&gt;chat), <span class="c">/* … */</span>];</span>
+<span class="ln">    }</span>
+<span class="ln">}</span></pre>
+  </div>
+</section>
+
+<!-- 15 ...................................................... code: tool -->
+<section class="slide" data-title="A tool">
+  <header class="rail">
+    <span class="kicker">Code &nbsp;·&nbsp; <b>tool</b></span>
+  </header>
+  <div class="body split wide-code">
+    <div class="col">
+      <h2>A tool is a PHP class the model may call</h2>
+      <div class="rows">
+        <div class="row"><b>schema</b><span>the arguments it is allowed to send</span></div>
+        <div class="row"><b>scoped</b><span>the chat is injected, not asked for</span></div>
+        <div class="row"><b>return</b><span>a string — the model reads it next</span></div>
+      </div>
+      <p class="fine">A failed rule is not an error to log. It is the model's next instruction.</p>
+    </div>
+    <pre class="code tall"><span class="path">app/Ai/Tools/CreateReminder.php</span><span class="ln"><span class="k">class</span> <span class="t">CreateReminder</span> <span class="k">implements</span> <span class="t">Tool</span></span>
 <span class="ln">{</span>
 <span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly</span> <span class="t">TelegramChat</span> $chat) {}</span>
-
-<span class="ln">    <span class="k">public function</span> description(): <span class="t">Stringable</span>|<span class="k">string</span></span>
-<span class="ln">    {</span>
-<span class="ln hl">        <span class="k">return</span> <span class="s">'Cancel one of the user\'s reminders by its id. Use'</span></span>
-<span class="ln hl">            .<span class="s">' ListReminders first if you do not know the id.'</span>;</span>
-<span class="ln">    }</span>
-<span class="ln">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span></span>
-<span class="ln">    {</span>
-<span class="ln">        $id = $request-&gt;integer(<span class="s">'id'</span>);</span>
-<span class="ln hl">        $cancelled = $this-&gt;chat-&gt;reminders()-&gt;pending()-&gt;whereKey($id)-&gt;delete();</span>
 <span class="ln"> </span>
-<span class="ln">        <span class="k">return</span> $cancelled &gt; <span class="n">0</span></span>
-<span class="ln">            ? <span class="s">"Cancelled reminder #{$id}."</span></span>
-<span class="ln">            : <span class="s">"No reminder #{$id} is waiting to be sent."</span>;</span>
-<span class="ln">    }</span>
 <span class="ln">    <span class="k">public function</span> schema(<span class="t">JsonSchema</span> $schema): <span class="k">array</span></span>
 <span class="ln">    {</span>
 <span class="ln">        <span class="k">return</span> [</span>
-<span class="ln">            <span class="s">'id'</span> =&gt; $schema-&gt;integer()</span>
-<span class="ln">                -&gt;description(<span class="s">'The id of the reminder to cancel.'</span>)</span>
-<span class="ln">                -&gt;required(),</span>
+<span class="ln">            <span class="s">'body'</span> =&gt; $schema-&gt;string()-&gt;required(),</span>
+<span class="ln hl">            <span class="s">'remind_at'</span> =&gt; $schema-&gt;string()</span>
+<span class="ln hl">                -&gt;description(<span class="s">'as YYYY-MM-DD HH:MM'</span>)-&gt;required(),</span>
 <span class="ln">        ];</span>
 <span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        $validator = <span class="t">Validator</span>::make($request-&gt;all(), [</span>
+<span class="ln">            <span class="s">'remind_at'</span> =&gt; [<span class="s">'bail'</span>, <span class="s">'required'</span>, <span class="s">'date_format:…'</span>, <span class="s">'after:now'</span>],</span>
+<span class="ln">        ], [</span>
+<span class="ln">            <span class="s">'remind_at.after'</span> =&gt; <span class="s">'That time has gone by. Ask for a later one.'</span>,</span>
+<span class="ln">        ]);</span>
+<span class="ln"> </span>
+<span class="ln hl">        <span class="k">if</span> ($validator-&gt;fails()) {</span>
+<span class="ln hl">            <span class="k">return</span> $validator-&gt;errors()-&gt;first();</span>
+<span class="ln hl">        }</span>
+<span class="ln"> </span>
+<span class="ln">        $reminder = $this-&gt;chat-&gt;reminders()-&gt;create($validator-&gt;validated());</span>
+<span class="ln">        <span class="k">return</span> <span class="s">"Reminder #{$reminder-&gt;id} set."</span>;</span>
+<span class="ln">    }</span>
 <span class="ln">}</span></pre>
   </div>
 </section>
 
-<!-- 16 ......................................................... step 4: out -->
-<section class="slide" data-title="Step 4 — the reply goes out">
+<!-- 16 ..................................................... use case: crm -->
+<section class="slide" data-title="CRM — log that call">
   <header class="rail">
-    <span class="kicker">04 <b>The code</b></span>
-    <span class="timing">step 4 of 4 &nbsp;·&nbsp; out</span>
+    <span class="kicker">Use cases &nbsp;·&nbsp; <b>crm</b></span>
+    <span class="timing">the relationship is the authorisation</span>
   </header>
-  <div class="body split wide-code">
-    <div class="col">
-      <h2>Step 4 — send it back</h2>
-      <p class="lede">The Bot API is a POST with a JSON body. That is the whole client.</p>
-      <div class="rows">
-        <div class="row"><b>ok</b><span>Telegram answers <code>200</code> with <code>{"ok": false}</code> — check the body, not the status</span></div>
-        <div class="row"><b>time</b><span>a long poll holds the connection open, so timeouts must be generous</span></div>
-        <div class="row"><b>hide</b><span>the token is in the URL, so scrub it before anything is logged</span></div>
-      </div>
-    </div>
-    <pre class="code"><span class="path">app/Services/Telegram.php</span><span class="ln"><span class="k">private function</span> call(<span class="k">string</span> $method, <span class="k">array</span> $payload = []): <span class="k">mixed</span></span>
+  <div class="body duo">
+    <h2>Log that call, scoped to the rep who is typing</h2>
+    <div class="pair">
+      <pre class="code tall"><span class="path">app/Ai/Agents/SalesCoach.php</span><span class="ln"><span class="k">class</span> <span class="t">SalesCoach</span> <span class="k">implements</span> <span class="t">Agent</span>, <span class="t">HasTools</span></span>
 <span class="ln">{</span>
-<span class="ln">    <span class="k">try</span> {</span>
-<span class="ln hl">        $response = <span class="t">Http</span>::asJson()</span>
-<span class="ln hl">            -&gt;connectTimeout(<span class="n">10</span>)</span>
-<span class="ln hl">            -&gt;timeout(<span class="n">60</span>)</span>
-<span class="ln hl">            -&gt;post(<span class="s">"https://api.telegram.org/bot{$this-&gt;token}/{$method}"</span>, $payload);</span>
-<span class="ln">    } <span class="k">catch</span> (<span class="t">ConnectionException</span> $e) {</span>
-<span class="ln">        <span class="k">throw new</span> <span class="t">RuntimeException</span>(<span class="s">"Telegram [{$method}] unreachable: "</span></span>
-<span class="ln">            .$this-&gt;scrub($e-&gt;getMessage()), previous: $e);</span>
+<span class="ln">    <span class="k">use</span> <span class="t">Promptable</span>;</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly</span> <span class="t">Rep</span> $rep) {}</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> instructions(): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> <span class="s">"You keep {$this-&gt;rep-&gt;name}'s pipeline honest."</span>;</span>
 <span class="ln">    }</span>
 <span class="ln"> </span>
-<span class="ln">    <span class="k">if</span> (! $response-&gt;successful() || $response-&gt;json(<span class="s">'ok'</span>) !== <span class="k">true</span>) {</span>
-<span class="ln">        <span class="k">throw new</span> <span class="t">RuntimeException</span>(<span class="s">"Telegram [{$method}] failed: "</span></span>
-<span class="ln">            .$this-&gt;scrub($response-&gt;body()));</span>
+<span class="ln">    <span class="k">public function</span> tools(): <span class="k">iterable</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [<span class="k">new</span> <span class="t">LogCall</span>($this-&gt;rep)];</span>
 <span class="ln">    }</span>
-<span class="ln"> </span>
-<span class="ln">    <span class="k">return</span> $response-&gt;json(<span class="s">'result'</span>);</span>
 <span class="ln">}</span></pre>
-  </div>
-</section>
-
-<!-- 17 ........................................................... end to end -->
-<section class="slide" data-title="One message, end to end">
-  <header class="rail">
-    <span class="kicker">04 <b>The code</b></span>
-    <span class="timing">the whole path</span>
-  </header>
-  <div class="body center split">
-    <div class="col">
-      <h2>“Remind me to call the dentist tomorrow at 9”</h2>
-      <p class="lede">Nine hops, two of them slow, none of them inside the HTTP request Telegram is waiting on.</p>
-      <p class="fine">Steps 5 and 7 are the only ones that cost money or wall-clock time. They run in a worker, where waiting is free — and where a crash is a failed job you can see and replay, not a dropped webhook.</p>
-    </div>
-    <pre class="term"><span class="you">1</span>  POST /telegram/webhook       <span class="dim">secret header checked</span>
-<span class="you">2</span>  HandleTelegramUpdate         <span class="dim">queued</span>
-<span class="you">3</span>  <span class="ok">204 No Content</span>              <span class="dim">Telegram is done waiting</span>
-   <span class="dim">─── worker picks up the job ───</span>
-<span class="you">4</span>  sendChatAction               <span class="dim">typing…</span>
-<span class="you">5</span>  prompt → provider            <span class="dim">instructions + history + 3 tools</span>
-<span class="you">6</span>  ← tool call                  <span class="ok">CreateReminder { remind_at: "2026-08-31 09:00" }</span>
-<span class="you">7</span>  CreateReminder::handle       <span class="dim">validate, insert → "Reminder #1 set for …"</span>
-<span class="you">8</span>  ← text                       <span class="dim">"Done, I'll nudge you Monday at 09:00."</span>
-<span class="you">9</span>  sendMessage                  <span class="dim">chat 42</span></pre>
-  </div>
-</section>
-
-<!-- 20 ..................................................... the bot speaks -->
-<section class="slide" data-title="When the bot speaks first">
-  <header class="rail">
-    <span class="kicker">04 <b>The code</b></span>
-    <span class="timing">the other direction</span>
-  </header>
-  <div class="body split wide-code">
-    <div class="col">
-      <h2>Nobody is in the chat when a reminder goes out</h2>
-      <p class="lede">Every other message in this app answers an update. This one answers a clock.</p>
-      <div class="rows">
-        <div class="row"><b>cron</b><span>one scheduled command, every minute</span></div>
-        <div class="row"><b>due</b><span>one indexed query: not delivered, and the time has come</span></div>
-        <div class="row"><b>retry</b><span>a refused send stays undelivered, so the next minute tries again</span></div>
-        <div class="row"><b>free</b><span>no model call at all — the words were written when the reminder was set</span></div>
-      </div>
-      <p class="fine">The moment your bot can message people unprompted it stops being a chat feature and starts being infrastructure: it needs a schedule, a retry story, and somewhere to see what went out.</p>
-    </div>
-    <pre class="code"><span class="path">routes/console.php</span><span class="ln hl"><span class="t">Schedule</span>::command(<span class="t">DeliverReminders</span>::<span class="k">class</span>)-&gt;everyMinute()-&gt;withoutOverlapping();</span>
-<span class="ln"> </span>
-<span class="ln"><span class="c">// app/Console/Commands/DeliverReminders.php</span></span>
-<span class="ln"><span class="k">public function</span> handle(<span class="t">Telegram</span> $telegram): <span class="k">int</span></span>
+      <pre class="code tall"><span class="path">app/Ai/Tools/LogCall.php</span><span class="ln"><span class="k">class</span> <span class="t">LogCall</span> <span class="k">implements</span> <span class="t">Tool</span></span>
 <span class="ln">{</span>
-<span class="ln">    $reminders = <span class="t">Reminder</span>::due()-&gt;with(<span class="s">'telegramChat'</span>)-&gt;get();</span>
+<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly</span> <span class="t">Rep</span> $rep) {}</span>
 <span class="ln"> </span>
-<span class="ln">    <span class="k">foreach</span> ($reminders <span class="k">as</span> $reminder) {</span>
-<span class="ln">        <span class="k">try</span> {</span>
-<span class="ln">            $telegram-&gt;sendMessage($reminder-&gt;telegramChat-&gt;telegram_id, <span class="s">"⏰ {$reminder-&gt;body}"</span>);</span>
-<span class="ln">        } <span class="k">catch</span> (<span class="t">Throwable</span> $e) {</span>
-<span class="ln">            <span class="c">// Leave it undelivered so the next run tries again, rather</span></span>
-<span class="ln">            <span class="c">// than losing a reminder to one bad minute of network.</span></span>
-<span class="ln">            report($e);</span>
+<span class="ln">    <span class="k">public function</span> description(): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> <span class="s">"Log a call against one of this rep's deals."</span>;</span>
+<span class="ln">    }</span>
 <span class="ln"> </span>
-<span class="ln">            <span class="k">continue</span>;</span>
+<span class="ln">    <span class="k">public function</span> schema(<span class="t">JsonSchema</span> $schema): <span class="k">array</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [<span class="s">'deal_id'</span> =&gt; $schema-&gt;integer()-&gt;required(),</span>
+<span class="ln">                <span class="s">'notes'</span> =&gt; $schema-&gt;string()-&gt;max(<span class="n">500</span>)-&gt;required()];</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        $deal = $this-&gt;rep-&gt;deals()-&gt;find($request-&gt;deal_id);</span>
+<span class="ln"> </span>
+<span class="ln">        <span class="k">if</span> (! $deal) {</span>
+<span class="ln">            <span class="k">return</span> <span class="s">'Not one of your deals. Ask which one.'</span>;</span>
 <span class="ln">        }</span>
 <span class="ln"> </span>
-<span class="ln">        $reminder-&gt;update([<span class="s">'delivered_at'</span> =&gt; now()]);</span>
+<span class="ln">        $deal-&gt;calls()-&gt;create($request-&gt;only(<span class="s">'notes'</span>));</span>
+<span class="ln"> </span>
+<span class="ln">        <span class="k">return</span> <span class="s">"Logged against {$deal-&gt;name}."</span>;</span>
 <span class="ln">    }</span>
-<span class="ln"> </span>
-<span class="ln">    <span class="k">return</span> self::SUCCESS;</span>
 <span class="ln">}</span></pre>
-  </div>
-</section>
-
-<!-- 21 ............................................................... ch 05 -->
-<section class="slide chapter" data-title="Chapter 05 — What bit me">
-  <header class="rail">
-    <span class="kicker">05 <b>What bit me</b></span>
-    <!-- rehearsal: 3–4 min -->
-  </header>
-  <div class="body">
-    <div class="col">
-      <span class="num">05</span>
-      <h2>The demo works.<br>Now it has users.</h2>
-      <p class="clock">Timeouts · one provider · a message layer with opinions</p>
     </div>
   </div>
 </section>
 
-<!-- 19 ................................................................ queue -->
-<section class="slide" data-title="Never make Telegram wait">
+<!-- 17 ..................................................... use case: cms -->
+<section class="slide" data-title="CMS — fix the typo">
   <header class="rail">
-    <span class="kicker">05 <b>What bit me</b></span>
-    <span class="timing">gotcha 1 &nbsp;·&nbsp; timeouts</span>
+    <span class="kicker">Use cases &nbsp;·&nbsp; <b>cms</b></span>
+    <span class="timing">the policy that already guards your admin</span>
   </header>
-  <div class="body split wide-code">
-    <div class="col">
-      <h2>Never make Telegram wait for a model</h2>
-      <p class="lede">Telegram expects a prompt response to a webhook delivery, and redelivers an update it did not get one for.</p>
-      <div class="rows">
-        <div class="row"><b>bug</b><span>a slow generation reads as a failure, so the update comes back</span></div>
-        <div class="row"><b>worse</b><span>the second delivery answers too — the user gets two replies</span></div>
-        <div class="row"><b>fix</b><span>ack immediately, generate in a worker</span></div>
-      </div>
-      <p class="fine">The SDK's own <code>$agent-&gt;queue($text)-&gt;then(…)</code> backgrounds the model call. I queue the whole handler instead, because the reply still has to be <em>sent</em> — and that is one more network hop that can hang.</p>
-    </div>
-    <pre class="code"><span class="path">app/Jobs/HandleTelegramUpdate.php</span><span class="ln"><span class="k">class</span> <span class="t">HandleTelegramUpdate</span> <span class="k">implements</span> <span class="t">ShouldQueue</span></span>
+  <div class="body duo">
+    <h2>Fix the typo, behind the policy you already wrote</h2>
+    <div class="pair">
+      <pre class="code tall"><span class="path">app/Ai/Agents/EditorAssistant.php</span><span class="ln"><span class="k">class</span> <span class="t">EditorAssistant</span> <span class="k">implements</span> <span class="t">Agent</span>, <span class="t">HasTools</span></span>
 <span class="ln">{</span>
-<span class="ln">    <span class="k">use</span> <span class="t">Queueable</span>;</span>
+<span class="ln">    <span class="k">use</span> <span class="t">Promptable</span>;</span>
 <span class="ln"> </span>
-<span class="ln">    <span class="c">/**</span></span>
-<span class="ln">     <span class="c">* A retry would send the user a second reply, so a failed</span></span>
-<span class="ln">     <span class="c">* update is dropped and reported instead.</span></span>
-<span class="ln">     <span class="c">*/</span></span>
-<span class="ln hl">    <span class="k">public int</span> $tries = <span class="n">1</span>;</span>
+<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly</span> <span class="t">User</span> $editor) {}</span>
 <span class="ln"> </span>
-<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly array</span> $update) {}</span>
-<span class="ln"> </span>
-<span class="ln">    <span class="k">public function</span> handle(<span class="t">TelegramBot</span> $bot): <span class="k">void</span></span>
+<span class="ln">    <span class="k">public function</span> instructions(): <span class="t">Stringable</span>|<span class="k">string</span></span>
 <span class="ln">    {</span>
-<span class="ln">        $bot-&gt;handle($this-&gt;update);</span>
+<span class="ln">        <span class="k">return</span> <span class="s">'You edit the marketing site. Quote the new copy back.'</span>;</span>
 <span class="ln">    }</span>
-<span class="ln">}</span></pre>
-  </div>
-</section>
-
-<!-- 20 ............................................................. failover -->
-<section class="slide" data-title="One provider is a single point of failure">
-  <header class="rail">
-    <span class="kicker">05 <b>What bit me</b></span>
-    <span class="timing">gotcha 2 &nbsp;·&nbsp; failover</span>
-  </header>
-  <div class="body split wide-code">
-    <div class="col">
-      <h2>One provider is a single point of failure</h2>
-      <p class="lede">Free tiers get rate limited. Popular models get overloaded. Credit runs out on a Friday.</p>
-      <div class="rows">
-        <div class="row"><b>yes</b><span><code>RateLimitedException</code></span></div>
-        <div class="row"><b>yes</b><span><code>ProviderOverloadedException</code></span></div>
-        <div class="row"><b>yes</b><span><code>InsufficientCreditsException</code></span></div>
-        <div class="row"><b>no</b><span>bad requests and validation errors — those are your bug</span></div>
-      </div>
-      <p class="fine">Only a <code>FailoverableException</code> moves to the next provider, which is what you want: a malformed tool schema should fail loudly on the first try, not four times against four vendors.</p>
-    </div>
-    <div class="stack">
-      <pre class="code"><span class="path">app/Ai/Agents/TelegramAssistant.php</span><span class="ln"><span class="c">/** @return list&lt;string&gt; */</span></span>
-<span class="ln hl"><span class="k">public function</span> provider(): <span class="k">array</span></span>
-<span class="ln hl">{</span>
-<span class="ln hl">    <span class="k">return</span> [config(<span class="s">'ai.default'</span>), ...config(<span class="s">'ai.failover'</span>)];</span>
-<span class="ln hl">}</span></pre>
-      <pre class="code"><span class="path">.env</span><span class="ln">AI_PROVIDER=<span class="s">gemini</span></span>
-<span class="ln">AI_FAILOVER_PROVIDERS=<span class="s">openai,anthropic</span></span></pre>
-      <pre class="code"><span class="path">or per prompt, no config at all</span><span class="ln">$agent-&gt;prompt($text, provider: [<span class="t">Lab</span>::Gemini, <span class="t">Lab</span>::OpenAI]);</span></pre>
-      <p class="fine">Three providers, one deploy, no application code aware of any of them.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 21 ....................................................... message layer -->
-<section class="slide" data-title="Telegram will refuse a good reply">
-  <header class="rail">
-    <span class="kicker">05 <b>What bit me</b></span>
-    <span class="timing">gotcha 3 &nbsp;·&nbsp; the last mile</span>
-  </header>
-  <div class="body split wide-code">
-    <div class="col">
-      <h2>Telegram will refuse a perfectly good reply</h2>
-      <p class="lede">The model writes prose. The Bot API has opinions about prose.</p>
-      <div class="rows">
-        <div class="row"><b>4096</b><span>hard cap per message — split before sending, not after failing</span></div>
-        <div class="row"><b>md</b><span>an unbalanced <code>*</code> or a bare <code>_</code> makes the whole call fail</span></div>
-        <div class="row"><b>tell</b><span>say “keep it short” in the instructions and most of this stops</span></div>
-      </div>
-      <p class="fine">Losing the bold is fine. Losing the reply is not. That single <code>catch</code> was the difference between a bot that looks broken and one that looks plain.</p>
-    </div>
-    <pre class="code"><span class="path">app/Services/Telegram.php</span><span class="ln"><span class="k">public function</span> sendMessage(<span class="k">int</span> $chatId, <span class="k">string</span> $text): <span class="k">void</span></span>
-<span class="ln">{</span>
-<span class="ln hl">    <span class="k">foreach</span> (mb_str_split($text, <span class="n">4000</span>) <span class="k">as</span> $chunk) {</span>
-<span class="ln">        $this-&gt;sendChunk($chatId, $chunk);</span>
-<span class="ln">    }</span>
-<span class="ln">}</span>
 <span class="ln"> </span>
-<span class="ln"><span class="k">private function</span> sendChunk(<span class="k">int</span> $chatId, <span class="k">string</span> $text): <span class="k">void</span></span>
-<span class="ln">{</span>
-<span class="ln">    <span class="k">try</span> {</span>
-<span class="ln">        $this-&gt;call(<span class="s">'sendMessage'</span>, [</span>
-<span class="ln">            <span class="s">'chat_id'</span> =&gt; $chatId,</span>
-<span class="ln">            <span class="s">'text'</span> =&gt; $text,</span>
-<span class="ln">            <span class="s">'parse_mode'</span> =&gt; <span class="s">'Markdown'</span>,</span>
-<span class="ln">        ]);</span>
-<span class="ln">    } <span class="k">catch</span> (<span class="t">RuntimeException</span>) {</span>
-<span class="ln">        <span class="c">// A model can emit Markdown that Telegram refuses to parse,</span></span>
-<span class="ln">        <span class="c">// and dropping the reply is worse than losing the formatting.</span></span>
-<span class="ln hl">        $this-&gt;call(<span class="s">'sendMessage'</span>, [<span class="s">'chat_id'</span> =&gt; $chatId, <span class="s">'text'</span> =&gt; $text]);</span>
+<span class="ln">    <span class="k">public function</span> tools(): <span class="k">iterable</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [<span class="k">new</span> <span class="t">UpdatePage</span>($this-&gt;editor)];</span>
 <span class="ln">    }</span>
 <span class="ln">}</span></pre>
-  </div>
-</section>
-
-<!-- 22 ........................................................ four smaller -->
-<section class="slide" data-title="Four smaller ones">
-  <header class="rail">
-    <span class="kicker">05 <b>What bit me</b></span>
-    <span class="timing">gotcha 4 &nbsp;·&nbsp; the rest</span>
-  </header>
-  <div class="body center">
-    <h2>Four smaller ones, quickly</h2>
-    <div class="cards four">
-      <div class="card">
-        <span class="tag">rate limits</span>
-        <h3>Telegram counts too</h3>
-        <p>Telegram's guidance is roughly one message per second per chat and about thirty per second overall. Splitting a long reply into chunks can walk straight into that — throttle the sends, not just the prompts.</p>
-      </div>
-      <div class="card accent">
-        <span class="tag">secrets</span>
-        <h3>The token is in the URL</h3>
-        <p>Every Bot API call puts the token in the path, so any logged error message leaks it. One <code>scrub()</code> before anything reaches a log or a screen, and a bot token stops turning up in stack traces.</p>
-      </div>
-      <div class="card">
-        <span class="tag">networks</span>
-        <h3>Conference wi-fi drops</h3>
-        <p><code>telegram:poll</code> holds a 25-second connection open. Left plain, one dropped packet ends the demo; wrapped in a catch-warn-continue loop, it just reconnects.</p>
-      </div>
-      <div class="card">
-        <span class="tag">tests</span>
-        <h3>Fake the model</h3>
-        <p><code>TelegramAssistant::fake([…])</code> and <code>Http::fake()</code> cover the whole pipeline, tools included. 26 tests, no network, no tokens, 0.4 seconds.</p>
-      </div>
+      <pre class="code tall"><span class="path">app/Ai/Tools/UpdatePage.php</span><span class="ln"><span class="k">class</span> <span class="t">UpdatePage</span> <span class="k">implements</span> <span class="t">Tool</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly</span> <span class="t">User</span> $editor) {}</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> description(): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> <span class="s">'Rewrite the body of a page.'</span>;</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> schema(<span class="t">JsonSchema</span> $schema): <span class="k">array</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [<span class="s">'slug'</span> =&gt; $schema-&gt;string()-&gt;required(),</span>
+<span class="ln">                <span class="s">'body'</span> =&gt; $schema-&gt;string()-&gt;required()];</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        $page = <span class="t">Page</span>::whereSlug($request-&gt;slug)-&gt;sole();</span>
+<span class="ln"> </span>
+<span class="ln">        <span class="k">if</span> (<span class="t">Gate</span>::forUser($this-&gt;editor)-&gt;denies(<span class="s">'update'</span>, $page)) {</span>
+<span class="ln">            <span class="k">return</span> <span class="s">'You cannot edit that page.'</span>;</span>
+<span class="ln">        }</span>
+<span class="ln"> </span>
+<span class="ln">        $page-&gt;update($request-&gt;only(<span class="s">'body'</span>));</span>
+<span class="ln"> </span>
+<span class="ln">        <span class="k">return</span> <span class="s">"Updated {$page-&gt;slug}."</span>;</span>
+<span class="ln">    }</span>
+<span class="ln">}</span></pre>
     </div>
   </div>
 </section>
 
-<!-- 23 ............................................................... ch 06 -->
-<section class="slide chapter" data-title="Chapter 06 — Wrap up">
+<!-- 18 .......................................... use case: internal tools -->
+<section class="slide" data-title="Internal tools — the schema is the form">
   <header class="rail">
-    <span class="kicker">06 <b>Wrap up</b></span>
-    <!-- rehearsal: 2–3 min -->
+    <span class="kicker">Use cases &nbsp;·&nbsp; <b>internal tools</b></span>
+    <span class="timing">any crud</span>
   </header>
-  <div class="body">
-    <div class="col">
-      <span class="num">06</span>
-      <h2>Three boxes<br>to take home.</h2>
-      <p class="clock">Then questions</p>
+  <div class="body duo">
+    <h2>The schema <em>is</em> the form</h2>
+    <div class="pair">
+      <pre class="code tall"><span class="path">app/Ai/Agents/InventoryClerk.php</span><span class="ln"><span class="k">class</span> <span class="t">InventoryClerk</span> <span class="k">implements</span> <span class="t">Agent</span>, <span class="t">HasTools</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">use</span> <span class="t">Promptable</span>;</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly</span> <span class="t">Warehouse</span> $site) {}</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> instructions(): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> <span class="s">"You count stock at {$this-&gt;site-&gt;name}. Never guess a SKU."</span>;</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> tools(): <span class="k">iterable</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [<span class="k">new</span> <span class="t">AdjustStock</span>($this-&gt;site)];</span>
+<span class="ln">    }</span>
+<span class="ln">}</span></pre>
+      <pre class="code tall"><span class="path">app/Ai/Tools/AdjustStock.php</span><span class="ln"><span class="k">class</span> <span class="t">AdjustStock</span> <span class="k">implements</span> <span class="t">Tool</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly</span> <span class="t">Warehouse</span> $site) {}</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> description(): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> <span class="s">'Add or remove stock for one SKU at this site.'</span>;</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> schema(<span class="t">JsonSchema</span> $schema): <span class="k">array</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [<span class="s">'sku'</span> =&gt; $schema-&gt;string()-&gt;required(),</span>
+<span class="ln">                <span class="s">'delta'</span> =&gt; $schema-&gt;integer()-&gt;required(),</span>
+<span class="ln">                <span class="s">'reason'</span> =&gt; $schema-&gt;string()</span>
+<span class="ln">                    -&gt;enum([<span class="s">'damage'</span>, <span class="s">'recount'</span>, <span class="s">'return'</span>])-&gt;required()];</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        $item = $this-&gt;site-&gt;items()-&gt;whereSku($request-&gt;sku)-&gt;first();</span>
+<span class="ln"> </span>
+<span class="ln">        <span class="k">if</span> (! $item) {</span>
+<span class="ln">            <span class="k">return</span> <span class="s">"No {$request-&gt;sku} here. Read the SKU back to me."</span>;</span>
+<span class="ln">        }</span>
+<span class="ln"> </span>
+<span class="ln">        <span class="k">return</span> <span class="s">"{$item-&gt;sku} is now {$item-&gt;adjust($request)-&gt;on_hand}."</span>;</span>
+<span class="ln">    }</span>
+<span class="ln">}</span></pre>
     </div>
   </div>
 </section>
 
-<!-- 24 ................................................................ recap -->
-<section class="slide" data-title="The mental model">
+<!-- 19 ............................................... use case: workflows -->
+<section class="slide" data-title="Workflows — a human says yes">
   <header class="rail">
-    <span class="kicker">06 <b>Wrap up</b></span>
-    <span class="timing">the mental model</span>
+    <span class="kicker">Use cases &nbsp;·&nbsp; <b>real workflows</b></span>
+    <span class="timing">Approvable</span>
   </header>
-  <div class="body center">
-    <h2>Keep these three apart and it stays simple</h2>
-    <div class="recap">
-      <div class="piece">
-        <span class="what">the interface</span>
-        <h3>Telegram</h3>
-        <p>Delivers text, sends text. It knows nothing about models, and should stay that way.</p>
-      </div>
-      <div class="piece">
-        <span class="what">the orchestration</span>
-        <h3>Laravel</h3>
-        <p>Routes, jobs, database, tests. Decides what runs, when, as whom, and what happens when it fails.</p>
-      </div>
-      <div class="piece">
-        <span class="what">the brain</span>
-        <h3>laravel/ai</h3>
-        <p>Picks the words and picks the tools. It only ever gets to <em>ask</em> for an action — your class performs it.</p>
-      </div>
+  <div class="body duo">
+    <h2>A human still says yes</h2>
+    <div class="pair">
+      <pre class="code tall"><span class="path">app/Ai/Agents/FinanceAssistant.php</span><span class="ln"><span class="k">class</span> <span class="t">FinanceAssistant</span> <span class="k">implements</span> <span class="t">Agent</span>, <span class="t">HasTools</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">use</span> <span class="t">Promptable</span>;</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly</span> <span class="t">Account</span> $account) {}</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> instructions(): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> <span class="s">'You handle refunds. State the amount before you act.'</span>;</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> tools(): <span class="k">iterable</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [<span class="k">new</span> <span class="t">IssueRefund</span>($this-&gt;account)];</span>
+<span class="ln">    }</span>
+<span class="ln">}</span></pre>
+      <pre class="code tall"><span class="path">app/Ai/Tools/IssueRefund.php</span><span class="ln"><span class="k">class</span> <span class="t">IssueRefund</span> <span class="k">implements</span> <span class="t">Tool</span>, <span class="t">Approvable</span></span>
+<span class="ln">{</span>
+<span class="ln">    <span class="k">use</span> <span class="t">InteractsWithApprovals</span>;</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> __construct(<span class="k">private readonly</span> <span class="t">Account</span> $account) {}</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> description(): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> <span class="s">'Refund an invoice on this account.'</span>;</span>
+<span class="ln">    }</span>
+<span class="ln">    <span class="k">public function</span> schema(<span class="t">JsonSchema</span> $schema): <span class="k">array</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> [<span class="s">'invoice'</span> =&gt; $schema-&gt;string()-&gt;required(),</span>
+<span class="ln">                <span class="s">'pence'</span> =&gt; $schema-&gt;integer()-&gt;min(<span class="n">1</span>)-&gt;required()];</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">protected function</span> needsApproval(<span class="t">Request</span> $request): <span class="t">Approval</span>|<span class="k">bool</span></span>
+<span class="ln">    {</span>
+<span class="ln">        <span class="k">return</span> $request-&gt;pence &gt; <span class="n">5000</span></span>
+<span class="ln">            ? <span class="t">Approval</span>::required(<span class="s">'Refunds over £50 need a person.'</span>) : <span class="k">false</span>;</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="k">public function</span> handle(<span class="t">Request</span> $request): <span class="t">Stringable</span>|<span class="k">string</span></span>
+<span class="ln">    {</span>
+<span class="ln">        $refund = $this-&gt;account-&gt;refunds()-&gt;create($request-&gt;all());</span>
+<span class="ln">        <span class="k">return</span> <span class="s">"Refunded {$refund-&gt;amount} on {$refund-&gt;invoice}."</span>;</span>
+<span class="ln">    }</span>
+<span class="ln">}</span></pre>
     </div>
-    <p class="fine">The agent is the only new idea in the whole talk, and it is a class with four methods. Everything that makes it feel alive — memory, tools, failover, the scheduled nudge at nine in the morning — is ordinary Laravel around it.</p>
   </div>
 </section>
 
-<!-- 25 ................................................................. close -->
-<section class="slide" data-title="Thank you">
+<!-- 20 ........................................................... close -->
+<section class="slide" data-title="Go build one">
   <header class="rail">
-    <span class="kicker">06 <b>Wrap up</b></span>
-    <span class="timing">questions</span>
+    <span class="kicker">Thanks</span>
   </header>
   <div class="body split center">
     <div class="col">
-      <h1>Go build<br>a bot.</h1>
+      <h1>Go build<br>one.</h1>
       <div class="meta">
         <span class="who">Jigar Dhulla</span>
         <!-- EDIT ME: repo and slides URL -->
-        <span class="where"><span class="edit">github.com/…/telegram-ai-bot</span></span>
+        <span class="where"><span class="edit">github.com/jigar-dhulla/laravel-bengaluru</span></span>
       </div>
-      <p class="fine"><code>composer install</code>, a token from @BotFather, a Gemini key, <code>php artisan telegram:poll</code>. You can be talking to your own agent in about ten minutes.</p>
+      <p class="fine">A bot token, one API key, one public URL. Ten minutes on whichever platform you picked.</p>
     </div>
     <div class="stack">
-      <h3>If you want to go further</h3>
+      <h3>Telegram was just the door</h3>
       <div class="rows">
-        <div class="row"><b>01</b><span>Give it a tool that touches your real system — a ticket, an invoice, a deploy</span></div>
-        <div class="row"><b>02</b><span>Wrap the risky one in <code>Approvable</code> so a human confirms before it runs</span></div>
-        <div class="row"><b>03</b><span>Swap <code>prompt()</code> for <code>stream()</code> and edit the message as it arrives</span></div>
-        <div class="row"><b>04</b><span>Add <code>HasStructuredOutput</code> when you want typed JSON back instead of chat</span></div>
+        <div class="row"><b>swap</b><span>Slack, Discord, Google&nbsp;Chat, Teams &mdash; wherever your users already are</span></div>
+        <div class="row"><b>keep</b><span>the models, the agent, the tools, the queued job</span></div>
+        <div class="row"><b>write</b><span>a service for their API, a route that checks their signature</span></div>
       </div>
+      <p class="fine">That is the whole port. <em>The interface is the cheap part now</em> — so pick the app your users have open all day, and stop building screens for the ones they don't.</p>
       <p class="hint">Questions?</p>
     </div>
   </div>
@@ -1316,7 +1319,7 @@ model <span class="dim">→</span> Happy to set that — which day next week,
 </main>
 
 <div class="progress" role="presentation"></div>
-<p class="hud"><span class="hud-n">1</span> / <span class="hud-total">25</span></p>
+<p class="hud"><span class="hud-n">1</span> / <span class="hud-total">20</span></p>
 <nav class="nav" aria-label="Slides">
   <button type="button" data-prev title="Previous slide (←)">&#8592;</button>
   <button type="button" data-next title="Next slide (→)">&#8594;</button>
@@ -1422,12 +1425,19 @@ model <span class="dim">→</span> Happy to set that — which day next week,
     }
   });
 
-  var shot = document.querySelector('.frame img');
-  if (shot) {
-    shot.addEventListener('load', function () {
-      shot.closest('.frame').classList.remove('is-missing');
-    });
-  }
+  Array.prototype.slice.call(document.querySelectorAll('.frame img, .portrait img')).forEach(function (img) {
+    function reveal() {
+      img.closest('.frame, .portrait').classList.remove('is-missing');
+    }
+
+    // A cached image is already decoded by the time this runs and will never
+    // fire load again, so check before waiting for an event that has been and gone.
+    if (img.complete && img.naturalWidth > 0) {
+      reveal();
+    } else {
+      img.addEventListener('load', reveal);
+    }
+  });
 
   go(Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1));
 }());

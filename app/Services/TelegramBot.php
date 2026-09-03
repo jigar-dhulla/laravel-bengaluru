@@ -10,6 +10,11 @@ use App\Models\TelegramChat;
  */
 class TelegramBot
 {
+    /**
+     * The reply to /start.
+     */
+    private const WELCOME = 'Hi! I am a reminder bot built with Laravel and the Laravel AI SDK. Tell me what to remind you about and when — "remind me to call the dentist tomorrow at 9". Send /forget to start a fresh conversation.';
+
     public function __construct(private readonly Telegram $telegram) {}
 
     /**
@@ -19,7 +24,7 @@ class TelegramBot
      */
     public function handle(array $update): void
     {
-        $message = $update['message'] ?? null;
+        $message = $update['message'] ?? [];
         $text = trim((string) ($message['text'] ?? ''));
 
         if ($text === '') {
@@ -28,7 +33,6 @@ class TelegramBot
 
         $chat = $this->chatFor($message);
 
-        $this->telegram->sendTyping($chat->telegram_id);
         $this->telegram->sendMessage($chat->telegram_id, $this->reply($chat, $text));
     }
 
@@ -37,21 +41,42 @@ class TelegramBot
      */
     private function reply(TelegramChat $chat, string $text): string
     {
-        if ($text === '/start') {
-            return 'Hi! I am a reminder bot built with Laravel and the Laravel AI SDK. Tell me what to remind you about and when — "remind me to call the dentist tomorrow at 9". Send /forget to start a fresh conversation.';
-        }
+        return match ($text) {
+            '/start' => self::WELCOME,
+            '/forget' => $this->forget($chat),
+            default => $this->ask($chat, $text),
+        };
+    }
 
-        if ($text === '/forget') {
-            $chat->update(['conversation_id' => null]);
+    /**
+     * Drop the stored conversation so the next message starts fresh.
+     */
+    private function forget(TelegramChat $chat): string
+    {
+        $chat->update(['conversation_id' => null]);
 
-            return 'Done, I have forgotten our conversation. What would you like to talk about?';
-        }
+        return 'Done, I have forgotten our conversation. What would you like to talk about?';
+    }
+
+    /**
+     * Prompt the agent, remembering which conversation the reply belongs to.
+     *
+     * The typing indicator is sent here rather than for every update, because
+     * this is the only reply that waits on a model.
+     */
+    private function ask(TelegramChat $chat, string $text): string
+    {
+        $this->telegram->sendTyping($chat->telegram_id);
 
         $agent = new TelegramAssistant($chat);
 
-        $response = ($chat->conversation_id
-            ? $agent->continue($chat->conversation_id, as: $chat)
-            : $agent->forParticipant($chat))->prompt($text);
+        if ($chat->conversation_id) {
+            $agent->continue($chat->conversation_id, as: $chat);
+        } else {
+            $agent->forParticipant($chat);
+        }
+
+        $response = $agent->prompt($text);
 
         $chat->update(['conversation_id' => $response->conversationId]);
 

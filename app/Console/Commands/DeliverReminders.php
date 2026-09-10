@@ -35,7 +35,7 @@ class DeliverReminders extends Command
                 $telegram->sendMessage($reminder->telegramChat->telegram_id, "⏰ {$reminder->body}");
             } catch (Throwable $e) {
                 // Leave it undelivered so the next run tries again, rather than
-                // losing a reminder to one bad minute of network.
+                // losing a reminder to one bad moment of network.
                 $this->components->error($e->getMessage());
 
                 report($e);

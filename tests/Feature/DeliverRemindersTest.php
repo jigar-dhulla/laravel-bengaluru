@@ -60,3 +60,18 @@ it('retries a reminder the Bot API refused', function () {
 
     expect($reminder->fresh()->delivered_at)->toBeNull();
 });
+
+it('catches up on reminders missed since the last run', function () {
+    fakeBotApi();
+
+    $missed = Reminder::factory()->for($this->chat)->create([
+        'body' => 'Water the plants',
+        'remind_at' => now()->subDays(3),
+    ]);
+
+    $this->artisan('reminders:deliver')->assertSuccessful();
+
+    Http::assertSent(fn ($request) => str_contains($request['text'], 'Water the plants'));
+
+    expect($missed->fresh()->delivered_at)->not->toBeNull();
+});

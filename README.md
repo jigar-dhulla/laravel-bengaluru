@@ -21,7 +21,7 @@ POST /telegram/webhook                │                   (agent + tools)     
                                                                     ListReminders
                                                                     CancelReminder
 
-reminders:deliver (every minute) ─────────────────────────────▶ Telegram
+reminders:deliver (daily, 9am) ───────────────────────────────▶ Telegram
 ```
 
 | File | Role |
@@ -120,7 +120,12 @@ php artisan schedule:work      # or a real cron entry in production
 php artisan reminders:deliver  # or run it by hand
 ```
 
-A reminder the Bot API refuses is left undelivered so the next minute tries
+It runs once a day, at 9am in the app's time zone. `Reminder::due()` takes
+everything that has fallen due rather than only what came due since the last
+run, so a reminder set for 3pm yesterday — or for a stretch the scheduler was
+not running at all — goes out with that morning's batch.
+
+A reminder the Bot API refuses is left undelivered so the next run tries
 again.
 
 ## Tests

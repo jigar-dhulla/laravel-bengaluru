@@ -9,4 +9,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command(DeliverReminders::class)->everyMinute()->withoutOverlapping();
+// One delivery run a day. Reminder::due() takes everything already past its
+// time, so reminders missed since the last run — or while nothing was running
+// at all — go out together with that morning's batch.
+Schedule::command(DeliverReminders::class)->dailyAt('09:00')->withoutOverlapping();
